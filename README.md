@@ -1,0 +1,1 @@
+# murphy_node_template
