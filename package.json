@@ -1,0 +1,28 @@
+{
+  "name": "murphy_node_template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thexande/murphy_node_template.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thexande/murphy_node_template/issues"
+  },
+  "homepage": "https://github.com/thexande/murphy_node_template#readme",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "method-override": "^2.3.5",
+    "mongoose": "^4.4.17",
+    "morgan": "^1.7.0",
+    "path": "^0.12.7",
+    "pg": "^4.5.5"
+  }
+}
