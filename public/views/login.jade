@@ -22,7 +22,7 @@ html
 											|  Remember Me
 									input.btn.btn-lg.btn-success.btn-block(type='submit', value='Login')
 									|  New? Connect Github to get started.
-									input.btn.btn-lg.btn-default.btn-block(type='submit', value='Login With Github')
+									a.btn.btn-lg.btn-default.btn-block(onclick='window.location.href="/auth/github"' type='submit', value='Login With Github')
 	script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
 	script(src='/js/scripts/login-form.js')
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenLite.min.js')

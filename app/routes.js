@@ -5,11 +5,14 @@ var client = new pg.Client(connectionString);
 client.connect();
 
 
-// begin routers
+// bring in dependencies
+var passport = require('passport')
 var crudModel = require('./models/crud.js')
 var express = require('express')
 var path = require('path');
 router = express.Router();
+
+
 
 
 router.route('/login').get(function(req, res){
@@ -18,19 +21,65 @@ router.route('/login').get(function(req, res){
   )
 });
 
-// home route
-router.route('/home').get(function(req, res) {
-    res.sendFile('/Users/alexandermurphy/Dropbox/galvanize/sidework/murphy_node_template/public/home.html');
-});
-// index route
-router.route('/').get(function(req, res) {
-    res.sendFile('/Users/alexandermurphy/Dropbox/galvanize/sidework/murphy_node_template/public/index.html')
+// // home route
+// router.route('/home').get(function(req, res) {
+//     res.sendFile('/Users/alexandermurphy/Dropbox/galvanize/sidework/murphy_node_template/public/home.html');
+// });
+// // index route
+// router.route('/').get(function(req, res) {
+//     res.sendFile('/Users/alexandermurphy/Dropbox/galvanize/sidework/murphy_node_template/public/index.html')
+//
+// })
 
-})
 // post on index route experiment
-.post(function(req, res){
-  console.log(res);
-})
+// .post(function(req, res){
+//   console.log(res);
+// })
+
+
+// GET /auth/github
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  The first step in GitHub authentication will involve redirecting
+//   the user to github.com.  After authorization, GitHub will redirect the user
+//   back to this application at /auth/github/callback
+router.get('/auth/github',
+  passport.authenticate('github', { scope: [ 'user:email' ] }),
+  function(req, res){
+    // The request will be redirected to GitHub for authentication, so this
+    // function will not be called.
+  });
+
+// GET /auth/github/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function will be called,
+//   which, in this example, will redirect the user to the home page.
+router.get('/auth/github/callback',
+  passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+router.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
+
+
+
+
+// begin crud routers
 
 router.post('/api/v1/todos', function(req, res) {
   var data = {
