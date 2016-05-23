@@ -3,7 +3,6 @@
 var express = require('express');
 var passport = require('passport');
 var app = express();
-var mongoose = require('mongoose');
 var port = process.env.PORT || 3000;
 var database = require('./config/database');
 var morgan = require('morgan');
@@ -11,6 +10,10 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var GitHubStrategy = require('passport-github2').Strategy;
 var path = require('path');
+var Promise = require('bluebird');
+
+// user model from DB
+var userModel = require('./app/models/userModel.js')
 
 // config
 app.use(express.static(__dirname + '/public'));
@@ -22,9 +25,17 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 
 // jade
 app.set('views', path.join( __dirname , '/public/views'));
-console.log('views');
-console.log('views', __dirname + '/../public/views');
 app.set('view engine', 'jade');
+
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static(__dirname + '/public'));
+
+// router after passport initialize
+router = require('./app/routes')
+app.use('/', router);
 
 
 var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
@@ -64,21 +75,16 @@ passport.use(new GitHubStrategy({
       // represent the logged-in user.  In a typical application, you would want
       // to associate the GitHub account with a user record in your database,
       // and return that user instead.
+
+      // TODO createUser method in userModel.js
+      
+
       console.log(profile);
       return done(null, profile);
     });
   }
 ));
 
-// Initialize Passport!  Also use passport.session() middleware, to support
-// persistent login sessions (recommended).
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.static(__dirname + '/public'));
-
-// router after passport initialize
-router = require('./app/routes')
-app.use('/', router);
 
 app.listen(port);
 console.log("App listening on port " + port);
