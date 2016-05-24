@@ -1,9 +1,8 @@
 
 exports.up = function(knex, Promise) {
-    return knex.schema.createTableIfNotExists('users', function(table){
-      table.increments('uid').primary();
-      table.integer('github_id');
-
+    return knex.schema.createTable('github_users', function(table){
+    table.increments('uid').primary();
+    table.integer('github_id');
     table.text('login');
     table.integer('id')
     table.text('avatar_url');
@@ -36,5 +35,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  knex.schema.dropTable('users');
+  knex.schema.dropTable('github_users');  
 };

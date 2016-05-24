@@ -6,6 +6,9 @@
 // client.connect();
 //
 
+
+
+
 // bring in dependencies
 var passport = require('passport')
 var crudModel = require('./models/crud.js')
@@ -27,6 +30,11 @@ router.route('/').get(function(req, res){
 router.route('/dash').get(function(req, res){
   res.render('dash');
 });
+
+
+router.route('/usertest').get(function(req, res, next){
+
+})
 
 
 // // home route
@@ -65,6 +73,9 @@ router.get('/auth/github',
 router.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
+
+    // console.log("login GOOD and here is my data: ", req.user)
+
     res.redirect('/');
   });
 
