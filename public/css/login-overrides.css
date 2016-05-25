@@ -1,22 +1,24 @@
-/*body{
-    background: url(http://mymaplist.com/img/parallax/back.png);
+body{
+    background: url(http://www.alexmurphy.me/img/white_map.png);
 	background-color: #444;
-    background: url(http://mymaplist.com/img/parallax/pinlayer2.png),url(http://mymaplist.com/img/parallax/pinlayer1.png),url(http://mymaplist.com/img/parallax/back.png);
+    background: url(http://www.alexmurphy.me/img/git_marker_png_1.png),url(http://www.alexmurphy.me/img/git_marker_png_2.png),url(http://www.alexmurphy.me/img/back.png);
 }
-*/
+
 .vertical-offset-100{
     padding-top:100px;
 }
-
+/*
 body {
-  background: url(http://alexmurphy.me/img/gitworld.jpg) no-repeat center center fixed;
+  background: url(http://alexmurphy.me/img/white_map_with_crosshair.png) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-}
+}*/
 
 .btn-xlarge {
+  color: black;
+    background-color: tomato;
     padding: 18px 28px;
     font-size: 22px; //change this to your desired size
     line-height: normal;
