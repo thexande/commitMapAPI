@@ -14,7 +14,8 @@ var passport = require('passport')
 var crudModel = require('./models/crud.js')
 var express = require('express')
 var path = require('path');
-var userModel = require('./models/userModel');
+var ModelBase = require('bookshelf-modelbase')(bookshelf);
+
 router = express.Router();
 
 
@@ -31,10 +32,35 @@ router.route('/dash').get(function(req, res){
   res.render('dash');
 });
 
+// dynamic route
+router.get('/dash/:user', function (req, res) {
+  var User = ModelBase.extend({
+      tableName: 'github_users'
+  });
 
-router.route('/usertest').get(function(req, res, next){
+  User.findOne({
+    login : req.params.user
+  })
+  .then(function(collection){
+    if(collection){
+      res.send(collection.attributes);
+    }
+  })
+  // res.render(reuser)
+});
 
-})
+
+//
+// router.put('/api/v1/todos/:todo_id', function(req, res) {
+//     var results = [];
+//     var id = req.params.todo_id;
+//     var data = {
+//         text: req.body.text,
+//         complete: req.body.complete
+//     };
+
+
+
 
 
 // // home route
@@ -74,9 +100,9 @@ router.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
 
-    // console.log("login GOOD and here is my data: ", req.user)
+    console.log("login GOOD and here is my data: ", req.user)
 
-    res.redirect('/');
+    res.redirect('/dash');
   });
 
 router.get('/logout', function(req, res){

@@ -13,9 +13,6 @@ var path = require('path');
 var Promise = require('bluebird');
 var ModelBase = require('bookshelf-modelbase')(bookshelf);
 
-// user model from DB
-var userModel = require('./app/models/userModel.js')
-
 // config
 app.use(express.static(__dirname + '/public'));
 app.use(morgan('dev'));
@@ -83,46 +80,37 @@ passport.use(new GitHubStrategy({
 
             // does our user already exist in our db?
             User.findOrCreate({
-
-                    github_id: userFromGithubObj.id
-                }).then(function() {
-                  console.log("does not exist");
-                  // user does not exist in db. Create and return
-                  User.create(
-                    { github_id        : userFromGithubObj.id,
-                      login            : userFromGithubObj.login,
-                      avatar_url       : userFromGithubObj.avatar_url,
-                      gravatar_id      : userFromGithubObj.gravatar_id,
-                      url              : userFromGithubObj.url,
-                      html_url         : userFromGithubObj.html_url,
-                      followers_url    : userFromGithubObj.followers_url,
-                      following_url    : userFromGithubObj.following_url,
-                      gists_url        : userFromGithubObj.gists_url,
-                      starred_url      : userFromGithubObj.starred_url,
-                      subscriptions_url: userFromGithubObj.subscriptions_url,
-                      organizations_url: userFromGithubObj.organizations_url,
-                      repos_url        : userFromGithubObj.repos_url,
-                      events_url       : userFromGithubObj.events_url,
-                      name             : userFromGithubObj.name,
-                      company          : userFromGithubObj.company,
-                      blog             : userFromGithubObj.blog,
-                      location         : userFromGithubObj.location,
-                      email            : userFromGithubObj.email,
-                      hireable         : userFromGithubObj.hireable,
-                      bio              : userFromGithubObj.bio,
-                      public_repos     : userFromGithubObj.public_repos,
-                      public_gists     : userFromGithubObj.public_gists,
-                      followers        : userFromGithubObj.followers,
-                      following        : userFromGithubObj.following
-                    })
+                github_id        : userFromGithubObj.id,
+                login            : userFromGithubObj.login,
+                avatar_url       : userFromGithubObj.avatar_url,
+                gravatar_id      : userFromGithubObj.gravatar_id,
+                url              : userFromGithubObj.url,
+                html_url         : userFromGithubObj.html_url,
+                followers_url    : userFromGithubObj.followers_url,
+                following_url    : userFromGithubObj.following_url,
+                gists_url        : userFromGithubObj.gists_url,
+                starred_url      : userFromGithubObj.starred_url,
+                subscriptions_url: userFromGithubObj.subscriptions_url,
+                organizations_url: userFromGithubObj.organizations_url,
+                repos_url        : userFromGithubObj.repos_url,
+                events_url       : userFromGithubObj.events_url,
+                name             : userFromGithubObj.name,
+                company          : userFromGithubObj.company,
+                blog             : userFromGithubObj.blog,
+                location         : userFromGithubObj.location,
+                email            : userFromGithubObj.email,
+                hireable         : userFromGithubObj.hireable,
+                bio              : userFromGithubObj.bio,
+                public_repos     : userFromGithubObj.public_repos,
+                public_gists     : userFromGithubObj.public_gists,
+                followers        : userFromGithubObj.followers,
+                following        : userFromGithubObj.following
                 })
                 .then(function(collection) {
                     if (collection) {
-                        console.log("exists");
-                        console.log(collection.attributes);
+                        return done(null, collection.attributes);
                     }
                 })
-            return done(null, profile);
         });
     }
 ));
