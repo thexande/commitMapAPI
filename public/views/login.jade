@@ -1,21 +1,22 @@
 html
 	head
-		link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/darkly/bootstrap.min.css", rel="stylesheet")
+		link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/cyborg/bootstrap.min.css", rel="stylesheet")
 		link(href="/css/login-overrides.css" rel="stylesheet")
 		link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet")
 
 	body
 		.container
 			.row.vertical-offset-100
-				.col-md-4.col-md-offset-4
+				.col-md-5.col-md-offset-3
 					.panel.panel-default
 						.panel-heading.text-center
-							h3.panel-title Welcome to commitMap!
+							div.panel-title 
+								h1 Welcome to commitMap!
 
 						.panel-body.text-center
 							img(src='http://alexmurphy.me/img/git_map_pin_320x320.png')
 
-							h4 Integrating with the GitHub API, commitMap allows JS developers to view git commit history based on geo location.
+							h5	Integrating with the GitHub API, commitMap allows JS developers to view git commit history based on geo location.
 							a.btn.btn-danger.btn-xlarge( onclick='window.location.href="/auth/github"' ) 
 								span.fa.fa-github
 									h4 Sign in with Github

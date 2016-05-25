@@ -82,9 +82,10 @@ passport.use(new GitHubStrategy({
             });
 
             // does our user already exist in our db?
-            User.findOne({
+            User.findOrCreate({
+
                     github_id: userFromGithubObj.id
-                }).catch(function(e) {
+                }).then(function() {
                   console.log("does not exist");
                   // user does not exist in db. Create and return
                   User.create(
