@@ -11,12 +11,25 @@ html
 					.panel.panel-default
 						.panel-heading.text-center
 							div.panel-title 
-								h1 Welcome to commitMap!
+								h1 commitMap
 
 						.panel-body.text-center
 							img(src='http://alexmurphy.me/img/git_map_pin_320x320.png')
 
 							h5	Integrating with the GitHub API, commitMap allows JS developers to view git commit history based on geo location.
+
+							form(accept-charset='UTF-8', role='form')
+								fieldset
+									.form-group
+										input.form-control(placeholder='E-mail', name='email', type='text')
+									.form-group
+										input.form-control(placeholder='Password', name='password', type='password', value='')
+									.checkbox
+										label
+											input(name='remember', type='checkbox', value='Remember Me')
+											|  Remember Me
+									input.btn.btn-lg.btn-tomato.btn-block(type='submit', value='Login')
+
 							a.btn.btn-danger.btn-xlarge( onclick='window.location.href="/auth/github"' ) 
 								span.fa.fa-github
 									h4 Sign in with Github

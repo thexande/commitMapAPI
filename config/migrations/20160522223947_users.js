@@ -1,6 +1,6 @@
 
 exports.up = function(knex, Promise) {
-    return knex.schema.createTable('github_users', function(table){
+    return knex.schema.createTableIfNotExists('github_users', function(table){
     table.increments('uid').primary();
     table.integer('github_id');
     table.text('login');
@@ -29,11 +29,12 @@ exports.up = function(knex, Promise) {
     table.integer('public_gists');
     table.integer('followers');
     table.integer('following')
+    table.text('bearer_token')
     table.text('created_at');
     table.text('updated_at');
     })
 };
 
 exports.down = function(knex, Promise) {
-  knex.schema.dropTable('github_users');  
+  knex.schema.dropTable('github_users');
 };

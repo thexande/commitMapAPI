@@ -61,7 +61,55 @@ html( lang="en" )
 					.panel-heading.text-center
 						h5 Github Profile Informaton
 					.panel-body
-						h5 this is the content
+						.panel-body
+							.row
+								.col-md-3.col-lg-3(align='center')
+								img.img-circle(src='https://avatars.githubusercontent.com/u/7704414?v=3', name='aboutme', width='120', height='120')
+
+								//
+									<div class="col-xs-10 col-sm-10 hidden-md hidden-lg"> <br>
+									<dl>
+									<dt>DEPARTMENT:</dt>
+									<dd>Administrator</dd>
+									<dt>HIRE DATE</dt>
+									<dd>11/12/2013</dd>
+									<dt>DATE OF BIRTH</dt>
+									<dd>11/12/2013</dd>
+									<dt>GENDER</dt>
+									<dd>Male</dd>
+									</dl>
+									</div>
+								.col-md-9.col-lg-9
+									table.table.table-striped
+										tbody
+											tr
+												td Department:
+												td Programming
+											tr
+												td Hire date:
+												td 06/23/2013
+											tr
+												td Date of Birth
+												td 01/24/1988
+											tr
+											tr
+												td Gender
+												td Male
+											tr
+												td Home Address
+												td Metro Manila,Philippines
+											tr
+												td Email
+												td
+													a(href='mailto:info@support.com') info@support.com
+											td Phone Number
+											td
+												| 123-4567-890(Landline)
+												br
+												br
+												| 555-4567-890(Mobile)
+									a.btn.btn-primary(href='#') My Sales Performance
+									a.btn.btn-primary(href='#') Team Sales Performance
 			.col-md-6
 				.panel.panel-tomato
 					.panel-heading.text-center
@@ -83,4 +131,5 @@ html( lang="en" )
 			// ==================================================
 			// Placed at the end of the document so the pages load faster
 			script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
-			script(src='#{pathToAssets}/dist/js/bootstrap.min.js')
+			script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js')
+			script(src='/js/dashApp.js')

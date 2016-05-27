@@ -2,6 +2,7 @@
 
 var express = require('express');
 var passport = require('passport');
+var BearerStrategy = require('passport-http-bearer').Strategy;
 var app = express();
 var port = process.env.PORT || 3000;
 var database = require('./config/database');
@@ -12,6 +13,12 @@ var GitHubStrategy = require('passport-github2').Strategy;
 var path = require('path');
 var Promise = require('bluebird');
 var ModelBase = require('bookshelf-modelbase')(bookshelf);
+var randToken = require('rand-token');
+var passportConfig = require('./config/passportBearerConfig')
+
+var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
+var GITHUB_CLIENT_SECRET = "e2cd63e86c4b6090dbbace5a9282965591e37ba6";
+
 
 // config
 app.use(express.static(__dirname + '/public'));
@@ -39,9 +46,37 @@ app.use(express.static(__dirname + '/public'));
 router = require('./app/routes')
 app.use('/', router);
 
+// bring in user table
+var User = ModelBase.extend({
+    tableName: 'github_users'
+});
 
-var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
-var GITHUB_CLIENT_SECRET = "e2cd63e86c4b6090dbbace5a9282965591e37ba6";
+
+// bearer token for passport
+passport.use(
+    new BearerStrategy(
+        function(token, done) {
+
+          User.findOne({
+                  bearer_token: token
+              })
+              .catch(function(e) {
+                  return done(null, false)
+              })
+              .then(function(collection) {
+                      if (collection) {
+                          console.log("user found!!!!!!!!!!!!");
+                          return done(null, collection, {
+                              scope: 'all'
+                          })
+
+                      }
+                  }
+              );
+        }
+    )
+);
+
 
 
 // Passport session setup.
@@ -79,33 +114,37 @@ passport.use(new GitHubStrategy({
             });
 
             // does our user already exist in our db?
-            User.findOrCreate({
-                github_id        : userFromGithubObj.id,
-                login            : userFromGithubObj.login,
-                avatar_url       : userFromGithubObj.avatar_url,
-                gravatar_id      : userFromGithubObj.gravatar_id,
-                url              : userFromGithubObj.url,
-                html_url         : userFromGithubObj.html_url,
-                followers_url    : userFromGithubObj.followers_url,
-                following_url    : userFromGithubObj.following_url,
-                gists_url        : userFromGithubObj.gists_url,
-                starred_url      : userFromGithubObj.starred_url,
-                subscriptions_url: userFromGithubObj.subscriptions_url,
-                organizations_url: userFromGithubObj.organizations_url,
-                repos_url        : userFromGithubObj.repos_url,
-                events_url       : userFromGithubObj.events_url,
-                name             : userFromGithubObj.name,
-                company          : userFromGithubObj.company,
-                blog             : userFromGithubObj.blog,
-                location         : userFromGithubObj.location,
-                email            : userFromGithubObj.email,
-                hireable         : userFromGithubObj.hireable,
-                bio              : userFromGithubObj.bio,
-                public_repos     : userFromGithubObj.public_repos,
-                public_gists     : userFromGithubObj.public_gists,
-                followers        : userFromGithubObj.followers,
-                following        : userFromGithubObj.following
-                })
+            User.findOrCreateByProperty(
+              {
+                    github_id: userFromGithubObj.id,
+                    login: userFromGithubObj.login,
+                    avatar_url: userFromGithubObj.avatar_url,
+                    gravatar_id: userFromGithubObj.gravatar_id,
+                    url: userFromGithubObj.url,
+                    html_url: userFromGithubObj.html_url,
+                    followers_url: userFromGithubObj.followers_url,
+                    following_url: userFromGithubObj.following_url,
+                    gists_url: userFromGithubObj.gists_url,
+                    starred_url: userFromGithubObj.starred_url,
+                    subscriptions_url: userFromGithubObj.subscriptions_url,
+                    organizations_url: userFromGithubObj.organizations_url,
+                    repos_url: userFromGithubObj.repos_url,
+                    events_url: userFromGithubObj.events_url,
+                    name: userFromGithubObj.name,
+                    company: userFromGithubObj.company,
+                    blog: userFromGithubObj.blog,
+                    location: userFromGithubObj.location,
+                    email: userFromGithubObj.email,
+                    hireable: userFromGithubObj.hireable,
+                    bio: userFromGithubObj.bio,
+                    public_repos: userFromGithubObj.public_repos,
+                    public_gists: userFromGithubObj.public_gists,
+                    followers: userFromGithubObj.followers,
+                    following: userFromGithubObj.following,
+                    bearer_token: accessToken
+                },
+              {github_id : userFromGithubObj.id})
+
                 .then(function(collection) {
                     if (collection) {
                         return done(null, collection.attributes);
@@ -114,7 +153,6 @@ passport.use(new GitHubStrategy({
         });
     }
 ));
-
 
 app.listen(port);
 console.log("App listening on port " + port);
