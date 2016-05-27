@@ -1,0 +1,15 @@
+.panel-tomato{border-color:tomato;}
+.panel-tomato > .panel-heading {
+  color: #ffffff;
+  background-color: tomato;
+  border-color: tomato: ;
+}
+.panel-tomato > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: tomato: ;
+}
+.panel-tomato > .panel-heading .badge {
+  color: tomato;
+  background-color: #ffffff;
+}
+.panel-tomato > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: tomato: ;
