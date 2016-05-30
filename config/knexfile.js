@@ -9,7 +9,12 @@ module.exports = {
     },
     heroku: {
         client: 'pg',
-        connection: HEROKU_POSTGRESQL_COLOR_URL,
+        connection: {
+            host: 'ec2-54-225-100-236.compute-1.amazonaws.com',
+            user: 'bnuyasuurdfknw',
+            password: '35r-GerA0FnfrALsNrVupnNFgK',
+            database: 'd951o1es8og0g6'
+        },
         ssl: true,
         migrations: {
             'directory': __dirname + "/migrations",
