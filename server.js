@@ -121,7 +121,7 @@ passport.use(
     new BearerStrategy(
         function(token, done) {
           User.findOne({
-              jwt: token
+              bearer_token: token
           })
           .catch(function(e) {
               return done(null, false)
