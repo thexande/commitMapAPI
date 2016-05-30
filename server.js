@@ -189,6 +189,7 @@ passport.use(new GitHubStrategy({
         process.nextTick(function() {
             // bring our data in from github api.
             var userFromGithubObj = profile._json;
+            console.log(userFromGithubObj);
             var User = ModelBase.extend({
                 tableName: 'github_users'
             });
