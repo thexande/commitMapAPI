@@ -7,4 +7,9 @@ module.exports = {
       tableName: "users"
     }
     }
+    heroku: {
+      client: 'pg',
+      connection: HEROKU_POSTGRESQL_COLOR_URL,
+      ssl: true
+    }
 }
