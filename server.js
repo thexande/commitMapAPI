@@ -196,7 +196,7 @@ passport.use(new GitHubStrategy({
 
             // does our user already exist in our db?
             User.findOrCreate({
-                github_id: userFromGithubObj.id
+                login: userFromGithubObj.login
             }, {
                 github_id: userFromGithubObj.id,
                 login: userFromGithubObj.login,
