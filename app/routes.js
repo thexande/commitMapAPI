@@ -15,6 +15,20 @@ router.route('/').get(function(req, res) {
     })
 });
 
+// localAuth post
+// router.post('/localAuth'
+//   // passport.authenticate('local'),
+//   function(req, res){
+//     res.send("authenticated");
+//
+// })
+router.route('/localAuth').post(
+  passport.authenticate('local'),
+  function(req, res){
+    res.send(req.user)
+  }
+)
+
 // dashboard route
 router.route('/dashboard').get(function(req, res){
   res.render('dash');
@@ -22,12 +36,30 @@ router.route('/dashboard').get(function(req, res){
 
 router.get('/userData',
   passport.authenticate('bearer', { session: false }),
-  function(req, res, collection) {
+  function(req, res) {
     res.send(req.user);
 });
 
+// jwt testing
 
+// router.get('/jwt',
+//   passport.authenticate('jwt', { session: false }),
+//   function(req, res){
+//   console.log('jwt success')
+//   res.send(req.user);
 //
+// })
+
+
+
+router.get('/profile', passport.authenticate('jwt', { session: false}),
+    function(req, res) {
+        res.send(req.user.profile);
+    }
+);
+
+
+
 // // dynamic route
 // router.get('/dash/:user', passport.authenticate('github', {
 //     session: false
@@ -60,7 +92,7 @@ router.get('/auth/github/callback',
         failureRedirect: '/'
     }),
     function(req, res) {
-        res.redirect('/dashboard?access_token=' + req.user.bearer_token );
+        res.redirect('/dashboard?access_token=' + req.user.jwt );
     });
 
 router.get('/logout', function(req, res) {
