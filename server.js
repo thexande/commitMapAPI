@@ -144,7 +144,7 @@ passport.use(
       process.nextTick(function(){
         User.findOne({
           login: username,
-          bearer_token: password
+          password: password
         }).catch(function(e){
           return done(null, false)
         }).then(function(collection){
