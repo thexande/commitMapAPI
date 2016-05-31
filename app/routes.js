@@ -92,7 +92,7 @@ router.get('/auth/github/callback',
         failureRedirect: '/'
     }),
     function(req, res) {
-        res.redirect('/dashboard?access_token=' + req.user.jwt );
+        res.redirect('/dashboard?access_token=' + req.user.bearer_token );
     });
 
 router.get('/logout', function(req, res) {

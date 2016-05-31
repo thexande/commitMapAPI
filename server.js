@@ -4,8 +4,6 @@ var express = require('express');
 var passport = require('passport');
 var BearerStrategy = require('passport-http-bearer').Strategy;
 var LocalStrategy = require('passport-local').Strategy;
-
-
 var app = express();
 var port = process.env.PORT || 3000;
 var database = require('./config/database');
@@ -13,8 +11,6 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var GitHubStrategy = require('passport-github2').Strategy;
-
-
 var path = require('path');
 var Promise = require('bluebird');
 var ModelBase = require('bookshelf-modelbase')(bookshelf);
@@ -26,12 +22,12 @@ var jwtConfig = require('./config/jwtConfig')
 
 
 // heroku
-var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
-var GITHUB_CLIENT_SECRET = "e2cd63e86c4b6090dbbace5a9282965591e37ba6";
+// var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
+// var GITHUB_CLIENT_SECRET = "e2cd63e86c4b6090dbbace5a9282965591e37ba6";
 
 // local
-// var GITHUB_CLIENT_ID = '8005d46ec0c75d51d762';
-// var GITHUB_CLIENT_SECRET = '3014b9df497306c920bf57b8b09a3dfc167e3cf1';
+var GITHUB_CLIENT_ID = '8005d46ec0c75d51d762';
+var GITHUB_CLIENT_SECRET = '3014b9df497306c920bf57b8b09a3dfc167e3cf1';
 
 // Add headers
 app.use(function (req, res, next) {
@@ -183,8 +179,8 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new GitHubStrategy({
         clientID: GITHUB_CLIENT_ID,
         clientSecret: GITHUB_CLIENT_SECRET,
-        // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-        callbackURL: "http://commitmap.herokuapp.com/auth/github/callback"
+        callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+        // callbackURL: "http://commitmap.herokuapp.com/auth/github/callback"
     },
     function(accessToken, refreshToken, profile, done) {
         // asynchronous verification, for effect...
@@ -198,8 +194,6 @@ passport.use(new GitHubStrategy({
 
             // does our user already exist in our db?
             User.findOrCreateByProperty({
-              github_id: userFromGithubObj.id,
-            }, {
                 github_id: userFromGithubObj.id,
                 login: userFromGithubObj.login,
                 avatar_url: userFromGithubObj.avatar_url,
@@ -229,8 +223,9 @@ passport.use(new GitHubStrategy({
                 jwt: jsonwebtoken.sign(userFromGithubObj, jwtConfig.secret, {
                     expiresIn: 100000
                 })
+            }, {
+                github_id: userFromGithubObj.id
             })
-
             .then(function(collection) {
                 if (collection) {
                     return done(null, collection.attributes);
@@ -239,6 +234,37 @@ passport.use(new GitHubStrategy({
         });
     }
 ));
+
+// github webhook handler
+
+var http = require('http')
+var createHandler = require('github-webhook-handler')
+var handler = createHandler({ path: '/webhook', secret: 'myhashsecret' })
+
+http.createServer(function (req, res) {
+  handler(req, res, function (err) {
+    res.statusCode = 404
+    res.end('no such location')
+  })
+}).listen(7777)
+
+handler.on('error', function (err) {
+  console.error('Error:', err.message)
+})
+
+handler.on('push', function (event) {
+  console.log('Received a push event for %s to %s',
+    event.payload.repository.name,
+    event.payload.ref)
+})
+
+handler.on('issues', function (event) {
+  console.log('Received an issue event for %s action=%s: #%d %s',
+    event.payload.repository.name,
+    event.payload.action,
+    event.payload.issue.number,
+    event.payload.issue.title)
+})
 
 app.listen(port);
 console.log("App listening on port " + port);
