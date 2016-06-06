@@ -21,11 +21,11 @@ var jsonwebtoken = require('jsonwebtoken');
 var jwtConfig = require('./config/jwtConfig')
 
 
-// heroku
+// // heroku
 var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
 var GITHUB_CLIENT_SECRET = "e2cd63e86c4b6090dbbace5a9282965591e37ba6";
-//
-// // local
+// //
+// local
 // var GITHUB_CLIENT_ID = '8005d46ec0c75d51d762';
 // var GITHUB_CLIENT_SECRET = '3014b9df497306c920bf57b8b09a3dfc167e3cf1';
 

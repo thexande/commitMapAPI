@@ -40,6 +40,14 @@ router.get('/userData',
     res.send(req.user);
 });
 
+// route to recieve webhook for push event @github repo name
+router.post('/webHookTest',
+  function(req, res){
+    console.log(res.req.body);
+    res.send("woot");
+
+  })
+
 // jwt testing
 
 // router.get('/jwt',
@@ -48,7 +56,7 @@ router.get('/userData',
 //   console.log('jwt success')
 //   res.send(req.user);
 //
-// })
+// }) 
 
 
 
