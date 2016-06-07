@@ -77,17 +77,16 @@ router.get('/userWatchedRepos',
   router.post('/userWatchedRepos',
   passport.authenticate('bearer', {session: false }),
     function(req, res){
-      res.send(req.body)
       // update watched repos json in database
-      // watchedRepoTable.update({
-      //   selected_repos : 1113211
-      // }, {
-      //   id : req.user.attributes.id
-      // })
-      // .catch((e) => {console.log("error here from routes.js  " + e)})
-      // .then(function(collection){
-      //   console.log(collection);
-      // })
+      watchedRepoTable.update({
+        selected_repos : JSON.stringify(req.body.selected_repos)
+      }, {
+        id : req.user.attributes.id
+      })
+      .catch((e) => {console.log("error here from routes.js  " + e)})
+      .then(function(collection){
+        res.send(collection);
+      })
     }
   )
 
