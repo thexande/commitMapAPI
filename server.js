@@ -22,12 +22,12 @@ var jwtConfig = require('./config/jwtConfig')
 
 
 // // heroku
-var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
-var GITHUB_CLIENT_SECRET = "e2cd63e86c4b6090dbbace5a9282965591e37ba6";
+// var GITHUB_CLIENT_ID = "05380f6466ee28cc7524";
+// var GITHUB_CLIENT_SECRET = "e2cd63e86c4b6090dbbace5a9282965591e37ba6";
 // //
 // local
-// var GITHUB_CLIENT_ID = '8005d46ec0c75d51d762';
-// var GITHUB_CLIENT_SECRET = '3014b9df497306c920bf57b8b09a3dfc167e3cf1';
+var GITHUB_CLIENT_ID = '8005d46ec0c75d51d762';
+var GITHUB_CLIENT_SECRET = '3014b9df497306c920bf57b8b09a3dfc167e3cf1';
 
 // Add headers
 app.use(function (req, res, next) {
@@ -82,35 +82,36 @@ var User = ModelBase.extend({
     tableName: 'github_users'
 });
 
+
 // Passport session setup.
 
-var JwtStrategy = require('passport-jwt').Strategy,
-    ExtractJwt = require('passport-jwt').ExtractJwt;
-var opts = {}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
-opts.secretOrKey = jwtConfig.secret;
-
-
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-
-
-
-  console.log("in Strategy");
-
-
-
-    User.findOne({id: jwt_payload.sub}, function(err, user) {
-        if (err) {
-            return done(err, false);
-        }
-        if (user) {
-            done(null, user);
-        } else {
-            done(null, false);
-            // or you could create a new account
-        }
-    });
-}));
+// var JwtStrategy = require('passport-jwt').Strategy,
+//     ExtractJwt = require('passport-jwt').ExtractJwt;
+// var opts = {}
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
+// opts.secretOrKey = jwtConfig.secret;
+//
+//
+// passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+//
+//
+//
+//   console.log("in Strategy");
+//
+//
+//
+//     User.findOne({id: jwt_payload.sub}, function(err, user) {
+//         if (err) {
+//             return done(err, false);
+//         }
+//         if (user) {
+//             done(null, user);
+//         } else {
+//             done(null, false);
+//             // or you could create a new account
+//         }
+//     });
+// }));
 
 
 
@@ -118,6 +119,7 @@ passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
 passport.use(
     new BearerStrategy(
         function(token, done) {
+          console.log(token);
           User.findOne({
               bearer_token: token
           })
@@ -134,9 +136,7 @@ passport.use(
        }
     )
 );
-
 // passport local Strategy
-
 passport.use(
   new LocalStrategy(
     function(username, password, done){
@@ -179,17 +179,23 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new GitHubStrategy({
         clientID: GITHUB_CLIENT_ID,
         clientSecret: GITHUB_CLIENT_SECRET,
-        // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-        callbackURL: "http://commitmap.herokuapp.com/auth/github/callback"
+        callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+        // callbackURL: "http://commitmap.herokuapp.com/auth/github/callback"
     },
     function(accessToken, refreshToken, profile, done) {
         // asynchronous verification, for effect...
         process.nextTick(function() {
+
             // bring our data in from github api.
             var userFromGithubObj = profile._json;
-            console.log(userFromGithubObj);
+
+            // bring in our DB tables
             var User = ModelBase.extend({
                 tableName: 'github_users'
+            });
+
+            var watchedRepoTable = ModelBase.extend({
+                tableName: 'user_seleted_repos'
             });
 
             // does our user already exist in our db?
@@ -228,43 +234,20 @@ passport.use(new GitHubStrategy({
             })
             .then(function(collection) {
                 if (collection) {
+                  // create entry in watched repo table
+                  watchedRepoTable.findOrCreateByProperty({
+                    github_id: userFromGithubObj.id
+                  }, {
+                    github_id: userFromGithubObj.id
+                  })
+                  .catch((e) => {console.log("error here" + e)})
+                  // return out
                     return done(null, collection.attributes);
                 }
             })
         });
     }
 ));
-
-// // github webhook handler
-//
-// var http = require('http')
-// var createHandler = require('github-webhook-handler')
-// var handler = createHandler({ path: '/webhook', secret: 'myhashsecret' })
-//
-// http.createServer(function (req, res) {
-//   handler(req, res, function (err) {
-//     res.statusCode = 404
-//     res.end('no such location')
-//   })
-// }).listen(7777)
-//
-// handler.on('error', function (err) {
-//   console.error('Error:', err.message)
-// })
-//
-// handler.on('push', function (event) {
-//   console.log('Received a push event for %s to %s',
-//     event.payload.repository.name,
-//     event.payload.ref)
-// })
-//
-// handler.on('issues', function (event) {
-//   console.log('Received an issue event for %s action=%s: #%d %s',
-//     event.payload.repository.name,
-//     event.payload.action,
-//     event.payload.issue.number,
-//     event.payload.issue.title)
-// })
 
 app.listen(port);
 console.log("App listening on port " + port);

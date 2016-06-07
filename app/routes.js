@@ -8,6 +8,17 @@ var ModelBase = require('bookshelf-modelbase')(bookshelf);
 // declare router
 router = express.Router();
 
+// DB tables
+var User = ModelBase.extend({
+    tableName: 'github_users'
+});
+
+var watchedRepoTable = ModelBase.extend({
+    tableName: 'user_seleted_repos'
+});
+
+
+
 // login route
 router.route('/').get(function(req, res) {
     res.render('login', {
@@ -38,7 +49,53 @@ router.get('/userData',
   passport.authenticate('bearer', { session: false }),
   function(req, res) {
     res.send(req.user);
-});
+})
+
+
+
+
+
+
+
+
+
+// begin routes for getting and setting userWatched repos
+router.get('/userWatchedRepos',
+  passport.authenticate('bearer', {session: false }),
+  function(req, res){
+    watchedRepoTable.findOne({
+      id : req.user.attributes.id
+    }).catch(function(e){
+      console.log("error on find one "+e);
+    }).then(function(collection) {
+      if(collection){
+        res.send(collection)
+      }
+    })
+  })
+
+  router.post('/userWatchedRepos',
+  passport.authenticate('bearer', {session: false }),
+    function(req, res){
+      res.send(req.body)
+      // update watched repos json in database
+      // watchedRepoTable.update({
+      //   selected_repos : 1113211
+      // }, {
+      //   id : req.user.attributes.id
+      // })
+      // .catch((e) => {console.log("error here from routes.js  " + e)})
+      // .then(function(collection){
+      //   console.log(collection);
+      // })
+    }
+  )
+
+
+
+
+
+
 
 // route to recieve webhook for push event @github repo name
 router.post('/webHookTest',
@@ -56,7 +113,7 @@ router.post('/webHookTest',
 //   console.log('jwt success')
 //   res.send(req.user);
 //
-// }) 
+// })
 
 
 
@@ -83,7 +140,7 @@ router.get('/profile', passport.authenticate('jwt', { session: false}),
 //   back to this application at /auth/github/callback
 router.get('/auth/github',
     passport.authenticate('github', {
-        scope: ['user:email']
+        scope: ['user:email', 'read:repo_hook', 'write:repo_hook']
     }),
     function(req, res) {
         // The request will be redirected to GitHub for authentication, so this
