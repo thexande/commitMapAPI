@@ -1,5 +1,5 @@
 doctype
-html( lang="en" )
+html( lang="en" ng-app="commitMap")
 	head
 		title commitMap Dash
 		meta( charset='utf-8' )
@@ -11,7 +11,7 @@ html( lang="en" )
 	//- dash override stylesheet
 	link(href="/css/dash-overrides.css" rel="stylesheet")
 
-	body
+	body( ng-app="commitMap" )
 		// Fixed navbar
 		.navbar.navbar-default.navbar-fixed-top(role='navigation')
 			.navbar-header
@@ -132,4 +132,7 @@ html( lang="en" )
 			// Placed at the end of the document so the pages load faster
 			script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
 			script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js')
-			script(src='/js/dashApp.js')
+			script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.js")
+			script(src='/js/commitMapApp.js')
+			script(src='/js/commitMapControllers.js')
+			script(src='/js/services/dashboardFactory.js')

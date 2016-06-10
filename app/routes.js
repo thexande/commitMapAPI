@@ -19,22 +19,16 @@ var watchedRepoTable = ModelBase.extend({
 
 
 
-// login route
-router.route('/').get(function(req, res) {
+// SPA route
+router.route('*').get(function(req, res) {
     res.render('login', {
         title: 'Home'
     })
 });
 
 // localAuth post
-// router.post('/localAuth'
-//   // passport.authenticate('local'),
-//   function(req, res){
-//     res.send("authenticated");
-//
-// })
-router.route('/localAuth').post(
-  passport.authenticate('local'),
+router.route('/localAuth')
+  .post(passport.authenticate('local'),
   function(req, res){
     res.send(req.user)
   }
@@ -50,14 +44,6 @@ router.get('/userData',
   function(req, res) {
     res.send(req.user);
 })
-
-
-
-
-
-
-
-
 
 // begin routes for getting and setting userWatched repos
 router.get('/userWatchedRepos',
@@ -89,12 +75,6 @@ router.get('/userWatchedRepos',
       })
     }
   )
-
-
-
-
-
-
 
 // route to recieve webhook for push event @github repo name
 router.post('/webHookTest',

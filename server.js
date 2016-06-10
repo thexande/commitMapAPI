@@ -50,9 +50,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-
-// config
-app.use(express.static(__dirname + '/public'));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({
     'extended': 'true'
@@ -66,6 +63,8 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 // jade
 app.set('views', path.join(__dirname, '/public/views'));
 app.set('view engine', 'jade');
+
+
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
