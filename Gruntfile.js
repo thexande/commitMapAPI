@@ -8,7 +8,8 @@ module.exports = function(grunt) {
         },
         files: {
           'public/build/login.html': 'public/views/login.jade',
-          'public/build/dash.html' : 'public/views/dash.jade'
+          'public/build/dash.html' : 'public/views/dash.jade',
+          'public/build/root.html' : 'public/views/root.jade'
         }
       }
     },

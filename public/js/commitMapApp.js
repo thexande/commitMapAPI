@@ -1,19 +1,37 @@
 // Angular declaration to handle routing.
 var commitMap = angular.module('commitMap',
-  ['commitMap.controllers', 'commitMap.services', 'ui.router'])
+  ['commitMap.controllers', 'commitMap.services', 'ui.router', 'satellizer'])
 
 // attempt at SPA config
-commitMap.config(function($stateProvider, $urlRouterProvider) {
+commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
 
-  $urlRouterProvider.otherwise('/')
+  // $urlRouterProvider.otherwise('dashboard')
+  // GitHub
+  $authProvider.github({
+    url: '/auth/github',
+    authorizationEndpoint: 'http://localhost:3000/auth/github',
+    redirectUri: window.location.origin,
+    optionalUrlParams: ['scope'],
+    scope: ['user:email'],
+    scopeDelimiter: ' ',
+    type: '2.0',
+    popupOptions: { width: 618, height: 618 }
+  });
 
   $stateProvider
-    .state('login', {
+    .state('root', {
       url: '/',
-      templateUrl: 'views/login'
+      templateUrl: 'build/root.html'
+      // controller: 'loginController'
+    })
+    .state('login', {
+      url: '/login',
+      templateUrl: 'build/login.html',
+      controller: 'loginController'
     })
     .state('dashboard', {
       url: '/dash',
-      templateUrl: 'views/dash'
-    })
-})
+      templateUrl: 'build/dash.html',
+      controller: 'dashController'
+    });
+});

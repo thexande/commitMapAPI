@@ -20,10 +20,8 @@ var watchedRepoTable = ModelBase.extend({
 
 
 // SPA route
-router.route('*').get(function(req, res) {
-    res.render('login', {
-        title: 'Home'
-    })
+router.route('/').get(function(req, res) {
+    res.sendFile(path.join(__dirname, '../public/build/root.html'))
 });
 
 // localAuth post
@@ -136,7 +134,7 @@ router.get('/auth/github/callback',
         failureRedirect: '/'
     }),
     function(req, res) {
-        res.redirect('/dashboard?access_token=' + req.user.bearer_token );
+        res.send('/?access_token=' + req.user.bearer_token );
     });
 
 router.get('/logout', function(req, res) {

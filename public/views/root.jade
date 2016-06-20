@@ -1,0 +1,17 @@
+html( lang="en" ng-app="commitMap" )
+	head
+		link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/cyborg/bootstrap.min.css", rel="stylesheet")
+		link(href="/css/login-overrides.css" rel="stylesheet")
+		link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet")
+	body
+		div.viewContainer(ui-view="")
+		script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+		script(src='/js/scripts/login-form.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenLite.min.js')
+		script(src='http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js')
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.js")
+		script(src='/js/commitMapApp.js')
+		script(src='/js/commitMapControllers.js')
+		script(src='/js/services/dashboardFactory.js')
+		script(src="http://cdn.jsdelivr.net/satellizer/0.14.1/satellizer.min.js")

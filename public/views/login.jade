@@ -1,10 +1,5 @@
 html( lang="en" ng-app="commitMap" )
-	head
-		link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/cyborg/bootstrap.min.css", rel="stylesheet")
-		link(href="/css/login-overrides.css" rel="stylesheet")
-		link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet")
-
-	body( ng-controller="loginController" )
+	body( ui-view="" )
 		.container
 			.row.vertical-offset-100
 				.col-md-5.col-md-offset-3
@@ -28,20 +23,8 @@ html( lang="en" ng-app="commitMap" )
 										label
 											input(name='remember', type='checkbox', value='Remember Me')
 											|  Remember Me
-									input.btn.btn-lg.btn-tomato.btn-block(type='submit', value='Login')
+									input.btn.btn-lg.btn-tomato.btn-block(type='button', value='Login')
 
-							a.btn.btn-danger.btn-xlarge( ng-click="stateTest()" ) 
+							a.btn.btn-danger.btn-xlarge( ng-click="GitHubAuth('github')" ) 
 								span.fa.fa-github
 									h4 Sign in with Github
-
-
-
-	script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
-	script(src='/js/scripts/login-form.js')
-	script(src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenLite.min.js')
-	script(src='http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js')
-	script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js')
-	script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.js")
-	script(src='/js/commitMapApp.js')
-	script(src='/js/commitMapControllers.js')
-	script(src='/js/services/dashboardFactory.js')
