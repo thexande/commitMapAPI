@@ -4,6 +4,8 @@ var crudModel = require('./models/crud.js')
 var express = require('express')
 var path = require('path');
 var ModelBase = require('bookshelf-modelbase')(bookshelf);
+var request = require('request');
+var qs = require('querystring')
 
 // declare router
 router = express.Router();
@@ -123,6 +125,35 @@ router.get('/auth/github',
         // The request will be redirected to GitHub for authentication, so this
         // function will not be called.
     });
+router.post('/auth/github',
+  function(req,res){
+    var accessTokenUrl = 'https://github.com/login/oauth/access_token';
+    var userApiUrl = 'https://api.github.com/user';
+    var params = {
+      code: req.body.code,
+      client_id: req.body.clientId,
+      client_secret: '9b4d0ef16b573cc1c714097ae5e26899085d5d9c',
+      redirect_uri: req.body.redirectUri
+    }
+
+  request.get({ url: accessTokenUrl, qs: params },
+    function(err, response, accessToken) {
+      accessToken = qs.parse(accessToken)
+      var headers = { 'User-Agent': 'Satellizer' }
+
+      request.get({
+        url: userApiUrl,
+        qs: accessToken,
+        headers: headers,
+        json: true }, function(err, response, profile) {
+      console.log(profile)
+  })
+})
+
+
+    res.send({token:'woot'})
+  }
+)
 
 // GET /auth/github/callback
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -134,7 +165,7 @@ router.get('/auth/github/callback',
         failureRedirect: '/'
     }),
     function(req, res) {
-        res.send('/?access_token=' + req.user.bearer_token );
+        res.redirect('/#/dash/?access_token=' + req.user.bearer_token );
     });
 
 router.get('/logout', function(req, res) {

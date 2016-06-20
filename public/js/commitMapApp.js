@@ -9,13 +9,14 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
   // GitHub
   $authProvider.github({
     url: '/auth/github',
-    authorizationEndpoint: 'http://localhost:3000/auth/github',
-    redirectUri: window.location.origin,
+    clientId:'79c1a9391aa406e3f0a5',
+    authorizationEndpoint: 'https://github.com/login/oauth/authorize',
+    redirectUri: 'http://localhost:3000/#/dash',
     optionalUrlParams: ['scope'],
     scope: ['user:email'],
     scopeDelimiter: ' ',
     type: '2.0',
-    popupOptions: { width: 618, height: 618 }
+    popupOptions: { width: 1020, height: 618 }
   });
 
   $stateProvider

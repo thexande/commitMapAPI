@@ -8,7 +8,13 @@ angular.module('commitMap.controllers', [])
     console.log("in login controller");
     // login controller for github auth
     $scope.GitHubAuth = (provider) => {
-      $auth.authenticate(provider);
+      console.log("authenticateing")
+
+      $auth.authenticate(provider)
+        .then((response) => {
+          console.log("success");
+          console.log(response);
+        })
     }
 
 
