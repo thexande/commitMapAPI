@@ -19,6 +19,8 @@ var passportConfig = require('./config/passportBearerConfig')
     // begin jwt test
 var jsonwebtoken = require('jsonwebtoken');
 var jwtConfig = require('./config/jwtConfig')
+var knexLogger = require('knex-logger')
+
 
 
 // // heroku
@@ -31,26 +33,24 @@ var GITHUB_CLIENT_SECRET = '3014b9df497306c920bf57b8b09a3dfc167e3cf1';
 
 // Add headers
 app.use(function (req, res, next) {
-
-    // Website you wish to allow to connect
     // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8100');
     res.setHeader('Access-Control-Allow-Origin', '*');
-
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
     // Request headers you wish to allow
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true);
-
     // Pass to next layer of middleware
     next();
 });
 
+// logging
+app.use(knexLogger(database))
 app.use(morgan('dev'));
+
+
 app.use(bodyParser.urlencoded({
     'extended': 'true'
 }));

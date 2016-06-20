@@ -14,12 +14,9 @@ router = express.Router();
 var User = ModelBase.extend({
     tableName: 'github_users'
 });
-
 var watchedRepoTable = ModelBase.extend({
     tableName: 'user_seleted_repos'
 });
-
-
 
 // SPA route
 router.route('/').get(function(req, res) {
@@ -129,29 +126,80 @@ router.post('/auth/github',
   function(req,res){
     var accessTokenUrl = 'https://github.com/login/oauth/access_token';
     var userApiUrl = 'https://api.github.com/user';
+    var accessToken
     var params = {
       code: req.body.code,
       client_id: req.body.clientId,
       client_secret: '9b4d0ef16b573cc1c714097ae5e26899085d5d9c',
       redirect_uri: req.body.redirectUri
     }
-
   request.get({ url: accessTokenUrl, qs: params },
     function(err, response, accessToken) {
       accessToken = qs.parse(accessToken)
       var headers = { 'User-Agent': 'Satellizer' }
-
       request.get({
         url: userApiUrl,
         qs: accessToken,
         headers: headers,
         json: true }, function(err, response, profile) {
-      console.log(profile)
-  })
-})
+          // user profile is returned from github. check for user in db, if no user create one.
+          var userFromGithubObj = profile;
+          // does our user already exist in our db?
+          User.findOrCreateByProperty({
+              github_id: userFromGithubObj.id,
+              login: userFromGithubObj.login,
+              avatar_url: userFromGithubObj.avatar_url,
+              gravatar_id: userFromGithubObj.gravatar_id,
+              url: userFromGithubObj.url,
+              html_url: userFromGithubObj.html_url,
+              followers_url: userFromGithubObj.followers_url,
+              following_url: userFromGithubObj.following_url,
+              gists_url: userFromGithubObj.gists_url,
+              starred_url: userFromGithubObj.starred_url,
+              subscriptions_url: userFromGithubObj.subscriptions_url,
+              organizations_url: userFromGithubObj.organizations_url,
+              repos_url: userFromGithubObj.repos_url,
+              events_url: userFromGithubObj.events_url,
+              name: userFromGithubObj.name,
+              company: userFromGithubObj.company,
+              blog: userFromGithubObj.blog,
+              location: userFromGithubObj.location,
+              email: userFromGithubObj.email,
+              hireable: userFromGithubObj.hireable,
+              bio: userFromGithubObj.bio,
+              public_repos: userFromGithubObj.public_repos,
+              public_gists: userFromGithubObj.public_gists,
+              followers: userFromGithubObj.followers,
+              following: userFromGithubObj.following,
+              bearer_token: accessToken.access_token,
+              jwt: 'jwtgoeshere'
+          }, {
+              github_id: userFromGithubObj.id
+          })
+          .then(function(collection) {
+              if (collection) {
+                // update token entry
+                User.update({
+                  bearer_token: accessToken.access_token
+                }, {
+                  github_id : 111
+                })
+                .catch((e) => {console.log(e)})
 
+                // create entry in watched repo table
+                watchedRepoTable.findOrCreateByProperty({
+                  github_id: userFromGithubObj.id
+                }, {
+                  github_id: userFromGithubObj.id
+                })
+                .catch((e) => {console.log("error here" + e)})
+              }
+          })
+        })
 
-    res.send({token:'woot'})
+        // return token to angular app so user can access profile data.
+        res.send({token: accessToken})
+      })
   }
 )
 

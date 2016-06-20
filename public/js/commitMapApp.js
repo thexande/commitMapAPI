@@ -13,7 +13,7 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',
     redirectUri: 'http://localhost:3000/#/dash',
     optionalUrlParams: ['scope'],
-    scope: ['user:email'],
+    scope: ['user:email', 'read:repo_hook', 'write:repo_hook'],
     scopeDelimiter: ' ',
     type: '2.0',
     popupOptions: { width: 1020, height: 618 }
@@ -23,7 +23,6 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
     .state('root', {
       url: '/',
       templateUrl: 'build/root.html'
-      // controller: 'loginController'
     })
     .state('login', {
       url: '/login',

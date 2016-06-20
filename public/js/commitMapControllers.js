@@ -4,16 +4,29 @@ angular.module('commitMap.controllers', [])
     console.log("in dash controller");
     $scope.logTest = () => {console.log("controllerConnected")}
   })
-  .controller('loginController', function($scope, $http, $state, $auth){
+  .controller('loginController', function($scope, $http, $state, $auth, $httpParamSerializerJQLike){
     console.log("in login controller");
     // login controller for github auth
     $scope.GitHubAuth = (provider) => {
-      console.log("authenticateing")
-
       $auth.authenticate(provider)
+        .catch((e) => {console.log(e)})
         .then((response) => {
-          console.log("success");
           console.log(response);
+          // fetch profile data and store in factory.
+          $http({
+            url: '/userData',
+            method: "GET",
+            headers: {
+              Accept: "*/*",
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            paramSerializer: '$httpParamSerializerJQLike',
+            params: {access_token: '7fd2cbb5c818e85186e8fe01d4b5bf859db9a057'},
+          })
+          .catch((e) => {console.log(e)})
+          .then((res) => {
+            console.log(res);
+          })
         })
     }
 
