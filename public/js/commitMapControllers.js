@@ -19,7 +19,7 @@ angular.module('commitMap.controllers', [])
           // get user data
           // userFactory.getUserWithToken(response.data.token.access_token)
           userFactory.getUserWithToken('72cb79fd4cb424038809074f42a167763739ae58')
-          $state.go('dash')
+          $state.transitionTo('dash.home')
 
         })
     }

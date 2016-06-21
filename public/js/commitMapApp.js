@@ -38,12 +38,9 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
       templateUrl: 'build/dash.html',
       controller: 'dashController'
     })
-    .state('dash.dashHome', {
-      url: '/dash/home',
-      views: {
-        'dash-home': {
-          templateUrl: 'build/dash-child.html'
-        }
-      }
+    .state('dash.home', {
+      url: '/home',
+      templateUrl: 'build/dash-child.html'
+
     });
 });
