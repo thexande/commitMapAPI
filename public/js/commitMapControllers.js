@@ -1,32 +1,26 @@
 angular.module('commitMap.controllers', [])
-// dashboard controller
+
   .controller('dashController', function($scope, $http, $auth){
     console.log("in dash controller");
-    $scope.logTest = () => {console.log("controllerConnected")}
   })
-  .controller('loginController', function($scope, $http, $state, $auth, $httpParamSerializerJQLike){
-    console.log("in login controller");
+
+  .controller('loginController', function($scope, $http, $state, $auth, userFactory){
+
+    // userFactory.getUserWithToken()
+
+
     // login controller for github auth
     $scope.GitHubAuth = (provider) => {
       $auth.authenticate(provider)
         .catch((e) => {console.log(e)})
         .then((response) => {
-          console.log(response);
-          // fetch profile data and store in factory.
-          $http({
-            url: '/userData',
-            method: "GET",
-            headers: {
-              Accept: "*/*",
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            paramSerializer: '$httpParamSerializerJQLike',
-            params: {access_token: '7fd2cbb5c818e85186e8fe01d4b5bf859db9a057'},
-          })
-          .catch((e) => {console.log(e)})
-          .then((res) => {
-            console.log(res);
-          })
+          console.log(response)
+
+          // get user data
+          // userFactory.getUserWithToken(response.data.token.access_token)
+          userFactory.getUserWithToken('72cb79fd4cb424038809074f42a167763739ae58')
+          $state.go('dash')
+
         })
     }
 

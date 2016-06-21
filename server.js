@@ -118,7 +118,9 @@ var User = ModelBase.extend({
 passport.use(
     new BearerStrategy(
         function(token, done) {
-          console.log(token);
+          console.log("In bearer Strat")
+          
+          console.log(token)
           User.findOne({
               bearer_token: token
           })

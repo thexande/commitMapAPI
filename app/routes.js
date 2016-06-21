@@ -37,6 +37,14 @@ router.route('/dashboard').get(function(req, res){
 })
 
 router.get('/userData',
+function(req, res, next){
+  // set auth headers to '' to avoid angular additons
+  req.headers.Authorization = ''
+  req.headers.authorization = ''
+  // console.log(req.headers);
+  // console.log(req.query);
+  next()
+},
   passport.authenticate('bearer', { session: false }),
   function(req, res) {
     res.send(req.user);
@@ -179,12 +187,12 @@ router.post('/auth/github',
           .then(function(collection) {
               if (collection) {
                 // update token entry
-                User.update({
-                  bearer_token: accessToken.access_token
-                }, {
-                  github_id : 111
-                })
-                .catch((e) => {console.log(e)})
+                // User.update({
+                //   bearer_token: accessToken.access_token
+                // }, {
+                //   github_id : 111
+                // })
+                // .catch((e) => {console.log(e)})
 
                 // create entry in watched repo table
                 watchedRepoTable.findOrCreateByProperty({

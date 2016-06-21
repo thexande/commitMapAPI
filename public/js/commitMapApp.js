@@ -2,6 +2,10 @@
 var commitMap = angular.module('commitMap',
   ['commitMap.controllers', 'commitMap.services', 'ui.router', 'satellizer'])
 
+commitMap.run(function($http) {
+
+  // $httpProvider.defaults.headers.get = { 'My-Header' : 'value' }
+});
 // attempt at SPA config
 commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
 
@@ -17,7 +21,7 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
     scopeDelimiter: ' ',
     type: '2.0',
     popupOptions: { width: 1020, height: 618 }
-  });
+  })
 
   $stateProvider
     .state('root', {
@@ -29,9 +33,17 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
       templateUrl: 'build/login.html',
       controller: 'loginController'
     })
-    .state('dashboard', {
+    .state('dash', {
       url: '/dash',
       templateUrl: 'build/dash.html',
       controller: 'dashController'
+    })
+    .state('dash.dashHome', {
+      url: '/dash/home',
+      views: {
+        'dash-home': {
+          templateUrl: 'build/dash-child.html'
+        }
+      }
     });
 });
