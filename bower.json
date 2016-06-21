@@ -1,0 +1,26 @@
+{
+  "name": "commitMap",
+  "description": "commitmap",
+  "main": "server.js",
+  "authors": [
+    "Alex <amurphy345@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/thexande/murphy_node_template",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "datatables.net-bs": "^1.10.12",
+    "datatables.net": "^1.10.12",
+    "jquery": "^3.0.0",
+    "bootstrap": "^3.3.6",
+    "satellizer": "^0.14.1",
+    "tweenlite": "^1.11.5",
+    "gsap": "^1.18.5"
+  }
+}
