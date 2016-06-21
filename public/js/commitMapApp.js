@@ -2,15 +2,17 @@
 var commitMap = angular.module('commitMap',
   ['commitMap.controllers', 'commitMap.services', 'ui.router', 'satellizer'])
 
-commitMap.run(function($http) {
+  angular.module('commitMap').run(function($http) {
+    $http.defaults.headers.common.Authorization = ''
+    $http.defaults.headers.common.authorization = ''
+    $http.defaults.headers.common['authorization'] = ''
+  });
 
-  // $httpProvider.defaults.headers.get = { 'My-Header' : 'value' }
-});
 // attempt at SPA config
 commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
 
   // $urlRouterProvider.otherwise('dashboard')
-  // GitHub
+  // GitHub auth
   $authProvider.github({
     url: '/auth/github',
     clientId:'79c1a9391aa406e3f0a5',
@@ -37,6 +39,11 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
       url: '/dash',
       templateUrl: 'build/dash.html',
       controller: 'dashController'
+    })
+    .state('dash.repoSelect', {
+      url: '/reposelect',
+      templateUrl: 'build/repo-select.html',
+      controller: 'repoSelectController'
     })
     .state('dash.home', {
       url: '/home',

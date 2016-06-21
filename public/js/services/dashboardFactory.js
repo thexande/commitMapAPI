@@ -5,13 +5,22 @@ angular.module('commitMap.services', [])
     profileData : {},
     repoData : {},
     webHookData : {},
-    getUserWithToken : (token) => {
+    getReposFromGitHub : (passedToken) => {
+      return $http({
+        url: '/getReposFromGitHub',
+        method: "POST",
+        data: {token: passedToken}
+      })
+    },
 
-      // fetch profile data and store in factory.
+    getProfileData: () => {return this.profileData},
+    setProfileData: (data) => {this.profileData = data},
+
+    getUserWithToken : (token) => {
       $http.defaults.headers.get = {'authorization': ''}
       $http.defaults.headers.get = {'Authorization': ''}
-
-      $http({
+      // fetch profile data and store in factory.
+      return $http({
         url: '/userData',
         method: "GET",
         headers: {
@@ -20,13 +29,6 @@ angular.module('commitMap.services', [])
         },
         params: {access_token: token},
       })
-      .catch((e) => {console.log(e)})
-      .then((res) => {
-        console.log(res);
-        this.repoData = res.data
-        console.log(this.repoData);
-      })
-
     },
     test: function(){
       return "woot"

@@ -1,7 +1,9 @@
 angular.module('commitMap.controllers', [])
 
-  .controller('dashController', function($scope, $http, $auth){
-    console.log("in dash controller");
+  .controller('dashController', function($scope, $http, $auth,  userFactory){
+    console.log("in dash controller")
+    $scope.profileData = userFactory.getProfileData()
+    console.log($scope.profileData);
   })
 
   .controller('loginController', function($scope, $http, $state, $auth, userFactory){
@@ -19,7 +21,11 @@ angular.module('commitMap.controllers', [])
           // get user data
           // userFactory.getUserWithToken(response.data.token.access_token)
           userFactory.getUserWithToken('72cb79fd4cb424038809074f42a167763739ae58')
-          $state.transitionTo('dash.home')
+          .then((response) => {
+            console.log(response);
+            userFactory.setProfileData(response.data)
+            $state.transitionTo('dash.home')
+          })
 
         })
     }
@@ -37,4 +43,34 @@ angular.module('commitMap.controllers', [])
     //       $scope.go('dash')
     //     })
     // }
+  })
+  .controller('repoSelectController', function($scope, $http, $state, userFactory){
+    // github api call to get repos.
+    $scope.ProfileData = userFactory.getProfileData()
+    console.log($scope.ProfileData);
+    userFactory.getReposFromGitHub($scope.ProfileData.bearer_token)
+    userFactory.getReposFromGitHub('')
+      .catch((e) => {console.log(e)})
+      .then((res) => {console.log(res)})
+
+
+
+    // datatable initialization
+    $('#repoListTable').DataTable({
+    "language": {
+      "emptyTable": "Add some items to your order!"
+    },
+    searching: false,
+    ordering: false,
+    paging: false,
+    info: false,
+    // "aaData": itemsOrdered.data,
+    "aoColumns": [
+      { "title": 'Qty', "mDataProp": "qty" },
+      { "title": "Food Item", "mDataProp": "name" },
+      { "title": "price", "mDataProp": "price" },
+      { "title": "type", "mDataProp": "type" }
+    ]
+  })
+
   })

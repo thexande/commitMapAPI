@@ -6,6 +6,24 @@ var path = require('path');
 var ModelBase = require('bookshelf-modelbase')(bookshelf);
 var request = require('request');
 var qs = require('querystring')
+var GitHubApi = require("github");
+
+var github = new GitHubApi({
+    // optional
+    debug: true,
+    protocol: "https",
+    host: "api.github.com", // should be api.github.com for GitHub
+    // pathPrefix: "/api/v3", // for some GHEs; none for GitHub
+    timeout: 5000,
+    headers: {
+        "user-agent": "My-Cool-GitHub-App" // GitHub is happy with a unique user agent
+    },
+    followRedirects: false, // default: true; there's currently an issue with non-get redirects, so allow ability to disable follow-redirects
+});
+
+
+
+
 
 // declare router
 router = express.Router();
@@ -31,9 +49,16 @@ router.route('/localAuth')
   }
 )
 
-// dashboard route
-router.route('/dashboard').get(function(req, res){
-  res.render('dash');
+// latest github repo route
+router.route('/getReposFromGitHub').post(function(req, res){
+  console.log(req.body);
+  github.authenticate({
+      type: "oauth",
+      token: req.body.token
+  });
+  github.repos.getAll({}, function(err, res) {
+      console.log(JSON.stringify(res))
+  })
 })
 
 router.get('/userData',

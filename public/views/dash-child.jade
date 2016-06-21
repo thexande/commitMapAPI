@@ -9,52 +9,41 @@ legend.text-center
 			.panel-body
 				.row
 					.col-md-3.col-lg-3(align='center')
-					img.img-circle(src='https://avatars.githubusercontent.com/u/7704414?v=3', name='aboutme', width='120', height='120')
+						img.img-circle(src='{{profileData.avatar_url}}', name='aboutme', width='200', height='200')
+						legend.text-center {{profileData.name}}
+					table.table.table-striped
+						tbody
+							tr
+								td Username
+								td {{profileData.login}}
+							tr
+								td Blog URL
+								td {{profileData.blog}}
+							//- tr
+							//- 	td Bio
+							//- 	td {{profileData.bio}}
+							//- tr
+							//- 	td Company
+							//- 	td {{profileData.company}}
+							//- tr
+							//- 	td Email
+							//- 	td {{profileData.email}}
+							tr
+								td Hireable
+								td {{profileData.hireable}}
+							tr
+								td Location
+								td {{profileData.location}}
+							tr
+								td Followers
+								td {{profileData.followers}}
+							tr
+								td Following
+								td {{profileData.following}}
+							tr
+								td Following
+								td {{profileData.following}}
 
-					//
-						<div class="col-xs-10 col-sm-10 hidden-md hidden-lg"> <br>
-						<dl>
-						<dt>DEPARTMENT:</dt>
-						<dd>Administrator</dd>
-						<dt>HIRE DATE</dt>
-						<dd>11/12/2013</dd>
-						<dt>DATE OF BIRTH</dt>
-						<dd>11/12/2013</dd>
-						<dt>GENDER</dt>
-						<dd>Male</dd>
-						</dl>
-						</div>
-					.col-md-9.col-lg-9
-						table.table.table-striped
-							tbody
-								tr
-									td Department:
-									td Programming
-								tr
-									td Hire date:
-									td 06/23/2013
-								tr
-									td Date of Birth
-									td 01/24/1988
-								tr
-								tr
-									td Gender
-									td Male
-								tr
-									td Home Address
-									td Metro Manila,Philippines
-								tr
-									td Email
-									td
-										a(href='mailto:info@support.com') info@support.com
-								td Phone Number
-								td
-									| 123-4567-890(Landline)
-									br
-									br
-									| 555-4567-890(Mobile)
-						a.btn.btn-primary(href='#') My Sales Performance
-						a.btn.btn-primary(href='#') Team Sales Performance
 .col-md-6
 	.panel.panel-tomato
 		.panel-heading.text-center
