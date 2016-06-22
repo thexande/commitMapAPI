@@ -165,25 +165,25 @@ router.get('/userWatchedRepos',
 
 // begin routes for getting and setting user_available_repos
 router.get('/userAvailableRepos',
-function(req, res, next){
-  // set auth headers to '' to avoid angular additons
-  req.headers.Authorization = ''
-  req.headers.authorization = ''
-  next()
-},
-  passport.authenticate('bearer', {session: false }),
-  function(req, res){
-    console.log(req.user.attributes);
-    availableRepoTable.findOne({
-      // id : req.user.attributes.id
-      id : parseInt(req.user.attributes.id)
-    }).catch(function(e){
-      console.log("error on find one "+e);
-    }).then(function(collection) {
-      if(collection){
-        res.send(collection.attributes.available_repos)
-      }
-    })
+  function(req, res, next){
+    // set auth headers to '' to avoid angular additons
+    req.headers.Authorization = ''
+    req.headers.authorization = ''
+    next()
+  },
+    passport.authenticate('bearer', {session: false }),
+    function(req, res){
+      console.log(req.user.attributes);
+      availableRepoTable.findOne({
+        // id : req.user.attributes.id
+        id : parseInt(req.user.attributes.id)
+      }).catch(function(e){
+        console.log("error on find one "+e);
+      }).then(function(collection) {
+        if(collection){
+          res.send(collection.attributes.available_repos)
+        }
+      })
   })
 
   router.post('/userAvailableRepos',

@@ -27,6 +27,10 @@ angular.module('commitMap.controllers', [])
               .catch((e) => {console.log(e)})
               .then((res) => {
                 console.log(res)
+                userFactory.setToLocalStorage('availableUserRepoIds', res.data)
+                // get Latest repos from github
+              })
+              userFactory.getReposFromGitHub(response.data.token.access_token).then((res) => {
                 userFactory.setToLocalStorage('currentReposFromGithub', res.data)
               })
             // load user dash home
