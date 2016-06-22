@@ -178,8 +178,9 @@ router.post('/auth/github',
           // user profile is returned from github. check for user in db, if no user create one.
           var userFromGithubObj = profile;
           // does our user already exist in our db?
-          User.findOrCreateByProperty({
-              github_id: userFromGithubObj.id,
+          console.log("attempting find or create");
+          User.create({
+              id: 111,
               login: userFromGithubObj.login,
               avatar_url: userFromGithubObj.avatar_url,
               gravatar_id: userFromGithubObj.gravatar_id,
@@ -207,23 +208,25 @@ router.post('/auth/github',
               bearer_token: accessToken.access_token,
               jwt: 'jwtgoeshere'
           }, {
-              github_id: userFromGithubObj.id
+              id: userFromGithubObj.id
           })
+          .catch((e) => console.log(e))
           .then(function(collection) {
               if (collection) {
                 // update token entry
-                // User.update({
-                //   bearer_token: accessToken.access_token
-                // }, {
-                //   github_id : 111
-                // })
-                // .catch((e) => {console.log(e)})
+                console.log("Attempting Update");
+                User.update({
+                  bearer_token: accessToken.access_token
+                }, {
+                  id : userFromGithubObj.id
+                })
+                .catch((e) => {console.log(e)})
 
                 // create entry in watched repo table
                 watchedRepoTable.findOrCreateByProperty({
-                  github_id: userFromGithubObj.id
+                  id: userFromGithubObj.id
                 }, {
-                  github_id: userFromGithubObj.id
+                  id: userFromGithubObj.id
                 })
                 .catch((e) => {console.log("error here" + e)})
               }

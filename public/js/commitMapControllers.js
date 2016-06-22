@@ -49,7 +49,7 @@ angular.module('commitMap.controllers', [])
     $scope.ProfileData = userFactory.getProfileData()
     console.log($scope.ProfileData);
     userFactory.getReposFromGitHub($scope.ProfileData.bearer_token)
-    userFactory.getReposFromGitHub('')
+    userFactory.getReposFromGitHub('555b8a025f4b7f5660686559c0f3264add859a8d')
       .catch((e) => {console.log(e)})
       .then((res) => {console.log(res)})
 
