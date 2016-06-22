@@ -23,7 +23,7 @@ angular.module('commitMap.controllers', [])
             console.log(response2);
             userFactory.setToLocalStorage('userProfile', response2.data)
             // get repo data and store in factory
-            userFactory.getReposFromGitHub(response.data.token.access_token)
+            userFactory.getAvailableUserRepos(response.data.token.access_token)
               .catch((e) => {console.log(e)})
               .then((res) => {
                 console.log(res)

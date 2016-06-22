@@ -6,11 +6,18 @@ angular.module('commitMap.services', [])
     reposFromGithubData : {},
     repoData : {},
     webHookData : {},
-    getReposFromGitHub : (passedToken) => {
+    getAvailableUserRepos : (passedToken) => {
+      return $http({
+        url: '/userAvailableRepos',
+        method: "GET",
+        params: {access_token: passedToken}
+      })
+    },
+    setAvailableUserRepos : (passedToken) => {
       return $http({
         url: '/getReposFromGitHub',
         method: "POST",
-        data: {token: passedToken}
+        data: {access_token: passedToken}
       })
     },
     getFromLocalStorage: (key) => {

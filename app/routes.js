@@ -9,23 +9,17 @@ var request = require('request');
 var qs = require('querystring')
 var GitHubApi = require("github");
 var databaseConfig = require('../config/database')
+// github api access configuration
 var github = new GitHubApi({
-    // optional
     debug: true,
     protocol: "https",
-    host: "api.github.com", // should be api.github.com for GitHub
-    // pathPrefix: "/api/v3", // for some GHEs; none for GitHub
+    host: "api.github.com",
     timeout: 5000,
     headers: {
-        "user-agent": "commitMap" // GitHub is happy with a unique user agent
+        "user-agent": "commitMap"
     },
-    followRedirects: false, // default: true; there's currently an issue with non-get redirects, so allow ability to disable follow-redirects
+    followRedirects: false,
 });
-
-
-
-
-
 // declare router
 router = express.Router();
 
@@ -35,6 +29,9 @@ var User = ModelBase.extend({
 });
 var watchedRepoTable = ModelBase.extend({
     tableName: 'user_seleted_repos'
+});
+var availableRepoTable = ModelBase.extend({
+    tableName: 'user_available_repos'
 });
 
 // SPA route
@@ -119,6 +116,47 @@ router.get('/userWatchedRepos',
     }
   )
 
+// begin routes for getting and setting user_available_repos
+router.get('/userAvailableRepos',
+function(req, res, next){
+  // set auth headers to '' to avoid angular additons
+  req.headers.Authorization = ''
+  req.headers.authorization = ''
+  next()
+},
+  passport.authenticate('bearer', {session: false }),
+  function(req, res){
+    console.log(req.user.attributes);
+    availableRepoTable.findOne({
+      // id : req.user.attributes.id
+      id : parseInt(req.user.attributes.id)
+    }).catch(function(e){
+      console.log("error on find one "+e);
+    }).then(function(collection) {
+      if(collection){
+        res.send(collection.attributes.available_repos)
+      }
+    })
+  })
+
+  router.post('/userAvailableRepos',
+  passport.authenticate('bearer', {session: false }),
+    function(req, res){
+      // update watched repos json in database
+      availableRepoTable.update({
+        selected_repos : JSON.stringify(req.body.selected_repos)
+      }, {
+        id : req.user.attributes.id
+      })
+      .catch((e) => {console.log("error here from routes.js  " + e)})
+      .then(function(collection){
+        res.send(collection);
+      })
+    }
+  )
+
+// routes for user available r
+
 // route to recieve webhook for push event @github repo name
 router.post('/webHookTest',
   function(req, res){
@@ -146,28 +184,6 @@ router.get('/profile', passport.authenticate('jwt', { session: false}),
 );
 
 
-
-// // dynamic route
-// router.get('/dash/:user', passport.authenticate('github', {
-//     session: false
-// }), function(req, res) {
-//     // res.json(req.user);
-//     console.log("authenticated");
-// });
-
-// GET /auth/github
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  The first step in GitHub authentication will involve redirecting
-//   the user to github.com.  After authorization, GitHub will redirect the user
-//   back to this application at /auth/github/callback
-router.get('/auth/github',
-    passport.authenticate('github', {
-        scope: ['user:email', 'read:repo_hook', 'write:repo_hook']
-    }),
-    function(req, res) {
-        // The request will be redirected to GitHub for authentication, so this
-        // function will not be called.
-    });
 router.post('/auth/github',
   function(req,res){
     var accessTokenUrl = 'https://github.com/login/oauth/access_token';
@@ -234,14 +250,33 @@ router.post('/auth/github',
                   // send token after update in github_user table
                   res.send({token: accessToken})
                 })
-
                 // create entry in watched repo table
                 watchedRepoTable.findOrCreateByProperty({
-                  id: userFromGithubObj.id
+                  github_id: userFromGithubObj.id
                 }, {
-                  id: userFromGithubObj.id
+                  github_id: userFromGithubObj.id
                 })
                 .catch((e) => {console.log("error here" + e)})
+                // fetch available repos and store.
+                github.authenticate({
+                    type: "oauth",
+                    token: accessToken.access_token
+                });
+                github.repos.getAll({}, function(err, response) {
+                    // create entry in available_repos table and add users public repos
+                    availableRepoTable.findOrCreateByProperty({
+                      github_id: userFromGithubObj.id,
+                      available_repos: JSON.stringify(response)
+                    }, {
+                      github_id: userFromGithubObj.id
+                    })
+                    // update table with the latest repo info is there is a record already
+                    databaseConfig('user_available_repos').where({
+                      github_id : userFromGithubObj.id
+                    }).update({
+                      available_repos: JSON.stringify(response)
+                    })
+                })
               }
           })
         })
