@@ -7,12 +7,16 @@ legend.text-center
 			span Repositories available
 		.panel-body
 			.panel-body
-				table.table.table-striped(st-table='reposFromGithubData')
+				table.table.table-striped.table-bordered(st-table='reposFromGithubData')
 					thead
+						//- input.form-control(st-search='' placeholder='global search ...' type='text')
 						tr
+							th Add To Watch
 							th Repository				
 					tbody
 						tr(ng-repeat='repo in reposFromGithubData')
+							td 
+								input(type="button" class="btn btn-tomato" value="Add" ng-click="addRepoToWatch(repo.id)")
 							td {{repo.full_name}}
 
 

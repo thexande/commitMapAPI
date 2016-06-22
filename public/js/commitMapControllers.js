@@ -52,7 +52,10 @@ angular.module('commitMap.controllers', [])
   .controller('repoSelectController', function($scope, $http, $state, userFactory){
     // github api call to get repos.
     $scope.reposFromGithubData = userFactory.getFromLocalStorage('currentReposFromGithub')
-    console.log($scope.reposFromGithubData);
+    $scope.addRepoToWatch = (repoId) => {
+      console.log(repoId);
+
+    }
 
 
     // set up data for ng-repeat in tables.

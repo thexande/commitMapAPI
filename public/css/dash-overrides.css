@@ -13,3 +13,8 @@
 }
 .panel-tomato > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: tomato: ;
+}
+.btn-tomato {
+    color: #fff;
+    background-color: tomato;
+    border-color: tomato;

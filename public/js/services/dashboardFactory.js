@@ -6,20 +6,43 @@ angular.module('commitMap.services', [])
     reposFromGithubData : {},
     repoData : {},
     webHookData : {},
-    getAvailableUserRepos : (passedToken) => {
+
+    // getAvailableUserRepos : (passedToken) => {
+    //   return $http({
+    //     url: '/userAvailableRepos',
+    //     method: "GET",
+    //     params: {access_token: passedToken}
+    //   })
+    // },
+    // setAvailableUserRepos : (passedToken) => {
+    //   return $http({
+    //     url: '/getReposFromGitHub',
+    //     method: "POST",
+    //     data: {
+    //       access_token: passedToken,
+    //       selected_repo_id :
+    //     }
+    //   })
+    // },
+
+    getWatchedUserRepos : (passedToken) => {
       return $http({
-        url: '/userAvailableRepos',
+        url: '/userWatchedRepos',
         method: "GET",
         params: {access_token: passedToken}
       })
     },
-    setAvailableUserRepos : (passedToken) => {
+    setWatchedUserRepos : (passedToken, repoId) => {
       return $http({
         url: '/getReposFromGitHub',
         method: "POST",
-        data: {access_token: passedToken}
+        data: {
+          access_token: passedToken,
+          selected_repo_id : repoId
+        }
       })
     },
+
     getFromLocalStorage: (key) => {
       return localStorageService.get(key)
     },

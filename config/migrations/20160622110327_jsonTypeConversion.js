@@ -38,14 +38,14 @@ exports.up = function(knex, Promise) {
     knex.schema.createTableIfNotExists('user_seleted_repos', function(table){
       table.increments()
       table.integer('github_id')
-      table.json('selected_repos')
+      table.text('selected_repos')
       table.text('created_at')
       table.text('updated_at')
     }),
     knex.schema.createTableIfNotExists('user_available_repos', function(table){
       table.increments()
       table.integer('github_id')
-      table.json('available_repos')
+      table.text('available_repos')
       table.text('created_at')
       table.text('updated_at')
     }),
