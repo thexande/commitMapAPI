@@ -1,5 +1,6 @@
 // bring in dependencies
 var passport = require('passport')
+var pgNative = require('pg-native')
 var crudModel = require('./models/crud.js')
 var express = require('express')
 var path = require('path');
@@ -7,7 +8,7 @@ var ModelBase = require('bookshelf-modelbase')(bookshelf);
 var request = require('request');
 var qs = require('querystring')
 var GitHubApi = require("github");
-
+var databaseConfig = require('../config/database')
 var github = new GitHubApi({
     // optional
     debug: true,
@@ -16,7 +17,7 @@ var github = new GitHubApi({
     // pathPrefix: "/api/v3", // for some GHEs; none for GitHub
     timeout: 5000,
     headers: {
-        "user-agent": "My-Cool-GitHub-App" // GitHub is happy with a unique user agent
+        "user-agent": "commitMap" // GitHub is happy with a unique user agent
     },
     followRedirects: false, // default: true; there's currently an issue with non-get redirects, so allow ability to disable follow-redirects
 });
@@ -41,6 +42,18 @@ router.route('/').get(function(req, res) {
     res.sendFile(path.join(__dirname, '../public/build/root.html'))
 });
 
+// test route for knex raw query
+router.route('/raw').get((req, res) => {
+  // res.send(databaseConfig.toString())
+  // res.send(Object.keys(databaseConfig.select('*').from('github_users')))
+  databaseConfig.select('*').from('github_users').where({github_id : 7704414})
+  databaseConfig('github_users').where({github_id: 7704414}).update(
+    {bearer_token: 1000}
+  )
+  .then((result) => {
+    res.send(result)
+  })
+})
 // localAuth post
 router.route('/localAuth')
   .post(passport.authenticate('local'),
@@ -56,8 +69,8 @@ router.route('/getReposFromGitHub').post(function(req, res){
       type: "oauth",
       token: req.body.token
   });
-  github.repos.getAll({}, function(err, res) {
-      console.log(JSON.stringify(res))
+  github.repos.getAll({}, function(err, response) {
+      res.send(JSON.stringify(response))
   })
 })
 
@@ -179,8 +192,8 @@ router.post('/auth/github',
           var userFromGithubObj = profile;
           // does our user already exist in our db?
           console.log("attempting find or create");
-          User.create({
-              id: 111,
+          User.findOrCreateByProperty({
+              github_id: userFromGithubObj.id,
               login: userFromGithubObj.login,
               avatar_url: userFromGithubObj.avatar_url,
               gravatar_id: userFromGithubObj.gravatar_id,
@@ -213,14 +226,14 @@ router.post('/auth/github',
           .catch((e) => console.log(e))
           .then(function(collection) {
               if (collection) {
-                // update token entry
+                // // update token entry
                 console.log("Attempting Update");
-                User.update({
-                  bearer_token: accessToken.access_token
-                }, {
-                  id : userFromGithubObj.id
+                databaseConfig('github_users').where({github_id: userFromGithubObj.id}).update(
+                  {bearer_token: accessToken.access_token}
+                ).then((response) => {
+                  // send token after update in github_user table
+                  res.send({token: accessToken})
                 })
-                .catch((e) => {console.log(e)})
 
                 // create entry in watched repo table
                 watchedRepoTable.findOrCreateByProperty({
@@ -232,42 +245,8 @@ router.post('/auth/github',
               }
           })
         })
-
-        // return token to angular app so user can access profile data.
-        res.send({token: accessToken})
       })
   }
 )
-
-// GET /auth/github/callback
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  If authentication fails, the user will be redirected back to the
-//   login page.  Otherwise, the primary route function will be called,
-//   which, in this example, will redirect the user to the home page.
-router.get('/auth/github/callback',
-    passport.authenticate('github', {
-        failureRedirect: '/'
-    }),
-    function(req, res) {
-        res.redirect('/#/dash/?access_token=' + req.user.bearer_token );
-    });
-
-router.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-});
-
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/')
-}
-
 // send our router
 module.exports = router;

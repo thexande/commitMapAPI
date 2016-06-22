@@ -2,7 +2,8 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTableIfNotExists('github_users', function(table){
-      table.integer('id').primary()
+      table.increments()
+      table.integer('github_id')
       table.text('login')
       table.text('password')
       table.text('avatar_url')
@@ -35,13 +36,15 @@ exports.up = function(knex, Promise) {
       table.text('updated_at')
     }),
     knex.schema.createTableIfNotExists('user_seleted_repos', function(table){
-      table.integer('id').primary()
+      table.increments()
+      table.integer('github_id')
       table.json('selected_repos')
       table.text('created_at')
       table.text('updated_at')
     }),
     knex.schema.createTableIfNotExists('location_data', function(table){
-      table.integer('id').primary()
+      table.increments()
+      table.integer('github_id')
       table.integer('longitude')
       table.integer('latitude')
       table.integer('altitude')
@@ -56,7 +59,8 @@ exports.up = function(knex, Promise) {
       table.text('updated_at')
     }),
     knex.schema.createTableIfNotExists('github_webhooks', function(table){
-      table.integer('id').primary()
+      table.increments()
+      table.integer('github_id')
       table.text('repo_full_name')
       table.text('list_hook_api_endpoint')
       table.text('create_hook_api_endpoint')
@@ -66,7 +70,8 @@ exports.up = function(knex, Promise) {
       table.text('updated_at')
     }),
     knex.schema.createTableIfNotExists('github_webhook_events', function(table){
-      table.integer('id').primary()
+      table.increments()
+      table.integer('github_id')
       table.text('repo_full_name')
       table.text('webhook_event_type')
       table.json('webhook_event_payload')
