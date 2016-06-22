@@ -1,8 +1,9 @@
 angular.module('commitMap.services', [])
-.factory('userFactory', function($http){
+.factory('userFactory', function($http, localStorageService){
   return{
     // user variables
     profileData : {},
+    reposFromGithubData : {},
     repoData : {},
     webHookData : {},
     getReposFromGitHub : (passedToken) => {
@@ -14,7 +15,14 @@ angular.module('commitMap.services', [])
     },
 
     getProfileData: () => {return this.profileData},
-    setProfileData: (data) => {this.profileData = data},
+    setProfileData: (data) => {
+      this.profileData = data
+      // put data in local storage.
+      localStorageService.set('reposFromGithubData', data)
+    },
+
+    getRepoFromGithubData: () => {return this.reposFromGithubData},
+    setRepoFromGithubData: (data) => {this.reposFromGithubData = data},
 
     getUserWithToken : (token) => {
       $http.defaults.headers.get = {'authorization': ''}
@@ -29,9 +37,6 @@ angular.module('commitMap.services', [])
         },
         params: {access_token: token},
       })
-    },
-    test: function(){
-      return "woot"
     }
   }
 })

@@ -7,8 +7,14 @@ legend.text-center
 			span Repositories available
 		.panel-body
 			.panel-body
-				.row				
-					table.table.table-striped( id="repoListTable" )
+				table.table.table-striped(st-table='reposFromGithubData')
+					thead
+						tr
+							th Repository				
+					tbody
+						tr(ng-repeat='repo in reposFromGithubData')
+							td {{repo.full_name}}
+
 
 .col-md-6
 	.panel.panel-tomato

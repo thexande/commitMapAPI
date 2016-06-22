@@ -7,9 +7,18 @@
     <div class="panel-heading text-center"><span>Repositories available</span></div>
     <div class="panel-body">
       <div class="panel-body">
-        <div class="row">				
-          <table id="repoListTable" class="table table-striped"></table>
-        </div>
+        <table st-table="reposFromGithubData" class="table table-striped">
+          <thead>
+            <tr>
+              <th>Repository				</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="repo in reposFromGithubData">
+              <td>{{repo.full_name}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

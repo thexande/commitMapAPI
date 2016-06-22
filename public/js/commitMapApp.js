@@ -1,17 +1,23 @@
-// Angular declaration to handle routing.
+// Angular module declaration and services
 var commitMap = angular.module('commitMap',
-  ['commitMap.controllers', 'commitMap.services', 'ui.router', 'satellizer'])
-
-  angular.module('commitMap').run(function($http) {
-    $http.defaults.headers.common.Authorization = ''
-    $http.defaults.headers.common.authorization = ''
-    $http.defaults.headers.common['authorization'] = ''
-  });
-
+  ['commitMap.controllers', 'commitMap.services',
+    'ui.router', 'satellizer', 'smart-table', 'LocalStorageModule'])
+// default header manipulation
+angular.module('commitMap').run(function($http) {
+  $http.defaults.headers.common.Authorization = ''
+  $http.defaults.headers.common.authorization = ''
+  $http.defaults.headers.common['authorization'] = ''
+});
+// local storage config
+commitMap.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('commitMap')
+    .setStorageType('localStorage')
+    .setNotify(true, true)
+})
 // attempt at SPA config
 commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
-
-  // $urlRouterProvider.otherwise('dashboard')
+  $urlRouterProvider.otherwise('login')
   // GitHub auth
   $authProvider.github({
     url: '/auth/github',
@@ -24,7 +30,6 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
     type: '2.0',
     popupOptions: { width: 1020, height: 618 }
   })
-
   $stateProvider
     .state('root', {
       url: '/',

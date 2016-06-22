@@ -19,9 +19,17 @@ angular.module('commitMap.controllers', [])
           console.log(response)
           // get user data
           userFactory.getUserWithToken(response.data.token.access_token)
-          .then((response) => {
-            console.log(response);
-            userFactory.setProfileData(response.data)
+          .then((response2) => {
+            console.log(response2);
+            userFactory.setProfileData(response2.data)
+            // get repo data and store in factory
+            userFactory.getReposFromGitHub(response.data.token.access_token)
+              .catch((e) => {console.log(e)})
+              .then((res) => {
+                console.log(res)
+                userFactory.setRepoFromGithubData(res.data)
+              })
+            // load user dash home
             $state.transitionTo('dash.home')
           })
         })
@@ -43,12 +51,9 @@ angular.module('commitMap.controllers', [])
   })
   .controller('repoSelectController', function($scope, $http, $state, userFactory){
     // github api call to get repos.
-    $scope.ProfileData = userFactory.getProfileData()
-    console.log($scope.ProfileData);
+    $scope.reposFromGithubData = userFactory.getRepoFromGithubData()
+    console.log($scope.reposFromGithubData);
 
-    userFactory.getReposFromGitHub($scope.ProfileData.bearer_token)
-      .catch((e) => {console.log(e)})
-      .then((res) => {console.log(res)})
 
     // set up data for ng-repeat in tables.
 
