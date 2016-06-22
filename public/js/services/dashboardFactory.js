@@ -13,16 +13,12 @@ angular.module('commitMap.services', [])
         data: {token: passedToken}
       })
     },
-
-    getProfileData: () => {return this.profileData},
-    setProfileData: (data) => {
-      this.profileData = data
-      // put data in local storage.
-      localStorageService.set('reposFromGithubData', data)
+    getFromLocalStorage: (key) => {
+      return localStorageService.get(key)
     },
-
-    getRepoFromGithubData: () => {return this.reposFromGithubData},
-    setRepoFromGithubData: (data) => {this.reposFromGithubData = data},
+    setToLocalStorage: (key, value) => {
+      return localStorageService.set(key, value)
+    },
 
     getUserWithToken : (token) => {
       $http.defaults.headers.get = {'authorization': ''}

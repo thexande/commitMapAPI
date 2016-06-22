@@ -2,7 +2,7 @@ angular.module('commitMap.controllers', [])
 
   .controller('dashController', function($scope, $http, $auth,  userFactory){
     console.log("in dash controller")
-    $scope.profileData = userFactory.getProfileData()
+    $scope.profileData = userFactory.getFromLocalStorage('userProfile')
     console.log($scope.profileData);
   })
 
@@ -21,13 +21,13 @@ angular.module('commitMap.controllers', [])
           userFactory.getUserWithToken(response.data.token.access_token)
           .then((response2) => {
             console.log(response2);
-            userFactory.setProfileData(response2.data)
+            userFactory.setToLocalStorage('userProfile', response2.data)
             // get repo data and store in factory
             userFactory.getReposFromGitHub(response.data.token.access_token)
               .catch((e) => {console.log(e)})
               .then((res) => {
                 console.log(res)
-                userFactory.setRepoFromGithubData(res.data)
+                userFactory.setToLocalStorage('currentReposFromGithub', res.data)
               })
             // load user dash home
             $state.transitionTo('dash.home')
@@ -51,7 +51,7 @@ angular.module('commitMap.controllers', [])
   })
   .controller('repoSelectController', function($scope, $http, $state, userFactory){
     // github api call to get repos.
-    $scope.reposFromGithubData = userFactory.getRepoFromGithubData()
+    $scope.reposFromGithubData = userFactory.getFromLocalStorage('currentReposFromGithub')
     console.log($scope.reposFromGithubData);
 
 
