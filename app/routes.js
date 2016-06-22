@@ -311,22 +311,47 @@ router.post('/auth/github',
                 });
                 github.repos.getAll({}, function(err, response) {
                     var repoIds = response.map((val) => {return val.id}).toString()
-                    // create entry in available_repos table and add users public repos ids
+
+                    // create NEW entry in available_repos table and add users public repos ids
                     availableRepoTable.findOrCreateByProperty({
                       github_id: userFromGithubObj.id,
                       available_repos: repoIds
                     }, {
                       github_id: userFromGithubObj.id
-                    }).then((resp) => {
+                    }).then((availableRepoTableResponse) => {
                       // update table with the latest repo info is there is a record already
                       console.log('attempting update');
+                      // check for ids in watching table before overwriting.
 
-                      databaseConfig('user_available_repos').where({
-                        github_id : userFromGithubObj.id
-                      }).update({
-                        available_repos: repoIds
-                      }).then((res)=>{console.log(res);})
-                      // TODO account for repos in watch list and filter out any repos already watching
+
+
+                      // after, find in repos_available table based on ids in user_selected table, and remove
+                      databaseConfig('user_seleted_repos').where({github_id: userFromGithubObj.id})
+                        .then((res) => {
+                          // are there no repos selected?
+                          if(res[0].selected_repos == null ){
+                            var repoIdsWithSelectedRemoved = repoIds
+                          }
+                          // is only one repo selected?
+                          else if((res[0].selected_repos.indexOf(',') === -1) && (res[0].selected_repos != null)){
+                            // only one repo selected
+                            var repoIdsWithSelectedRemoved = repoIds.filter((el) => {
+                              return res[0].selected_repos.indexOf(el) < 0
+                            })
+                          } else {
+                            // many repos selected. split and loop.
+                            var repoIdsWithSelectedRemoved = repoIds.filter((el) => {
+                              return res[0].selected_repos.split(",").indexOf(el) < 0
+                            })
+                          }
+                          // update query after repoIds have been sanitized
+                          console.log(userFromGithubObj.id);
+                          databaseConfig('user_available_repos').where({
+                            github_id : userFromGithubObj.id
+                          }).update({
+                            available_repos: repoIdsWithSelectedRemoved
+                          }).then((res)=>{console.log(res);})
+                        })
                     })
                 })
               }
