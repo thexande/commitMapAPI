@@ -143,10 +143,10 @@ router.get('/userWatchedRepos',
           // after, find in repos_available table, and remove
           availableRepoTable.findOne({ id: req.user.attributes.id })
             .then((result) => {
-              console.log("ALTERINT availableRepoTable");
-              console.log(result);
+              console.log("ALTERING availableRepoTable");
+
               availableRepoTable.update({
-                available_repos: result.attributes.available_repos.split(',').map((i) => {
+                available_repos: result.attributes.available_repos.split(',').filter((i) => {
                   if(i.toString() != req.body.selected_repo_id.toString()){
                     return i
                   }
@@ -154,7 +154,6 @@ router.get('/userWatchedRepos',
               }, {
                 id: req.user.attributes.id
               })
-
             })
 
           // return to app
