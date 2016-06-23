@@ -20,7 +20,7 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
   $urlRouterProvider.otherwise('login')
   // GitHub auth
   $authProvider.github({
-    url: '/auth/github',
+    url: 'http://www.commitmap.com/auth/github',
     // commitMapSatelizer Id
     // clientId:'79c1a9391aa406e3f0a5',
     // commitMapHerokuSatelizer Id
