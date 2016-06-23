@@ -15,11 +15,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="repo in reposFromGithubData">
+            <tr ng-repeat="repoid in availableUserRepoIds">
               <td> 
-                <input type="button" value="Add" ng-click="addRepoToWatch(repo.id)" class="btn btn-tomato"/>
+                <input type="button" value="Add" ng-click="addRepoToWatch(repoid)" class="btn btn-tomato"/>
               </td>
-              <td>{{repo.full_name}}</td>
+              <td>{{repoid}}</td>
             </tr>
           </tbody>
         </table>
@@ -31,7 +31,22 @@
   <div class="panel panel-tomato">
     <div class="panel-heading text-center"><span>Repository Watch</span></div>
     <div class="panel-body">
-      <h5>this is the content</h5>
+      <table st-table="reposFromGithubData2" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Remove From Watch</th>
+            <th>Repository				</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="repoid in watchingUserRepoIds">
+            <td> 
+              <input type="button" value="Remove" ng-click="addRepoToWatch(repoid)" class="btn btn-tomato"/>
+            </td>
+            <td>{{repoid}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

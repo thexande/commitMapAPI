@@ -39,18 +39,18 @@ router.route('/').get(function(req, res) {
     res.sendFile(path.join(__dirname, '../public/build/root.html'))
 });
 
+
 // test route for knex raw query
 router.route('/raw').get((req, res) => {
-  // res.send(databaseConfig.toString())
-  // res.send(Object.keys(databaseConfig.select('*').from('github_users')))
   databaseConfig.select('*').from('github_users').where({github_id : 7704414})
-  databaseConfig('github_users').where({github_id: 7704414}).update(
-    {bearer_token: 1000}
-  )
   .then((result) => {
     res.send(result)
   })
 })
+
+
+
+
 // localAuth post
 router.route('/localAuth')
   .post(passport.authenticate('local'),
@@ -87,6 +87,11 @@ function(req, res, next){
 
 // begin routes for getting and setting userWatched repos
 router.get('/userWatchedRepos',
+  (req, res, next) => {
+    req.headers.Authorization = ''
+    req.headers.authorization = ''
+    next()
+  },
   passport.authenticate('bearer', {session: false }),
   function(req, res){
     watchedRepoTable.findOne({
@@ -101,9 +106,20 @@ router.get('/userWatchedRepos',
   })
 
   router.post('/userWatchedRepos',
+  // middleware logging function
+  (req, res, next) => {
+    // set auth headers to '' to avoid angular additons
+    req.headers.Authorization = ''
+    req.headers.authorization = ''
+    console.log("######################################################################");
+    console.log(req.body)
+    console.log(req.headers)
+    next()
+  },
   passport.authenticate('bearer', {session: false }),
     function(req, res){
       // update watched repos json in watched_repos table after fetching record
+      // TODO replace
       watchedRepoTable.findOne({id: req.user.attributes.id})
       .then((record) => {
         // record retreived from DB. now append our new id and update
@@ -118,7 +134,7 @@ router.get('/userWatchedRepos',
           (record.attributes.selected_repos != '')){
           console.log("DUPE");
           //  repo ID already being watched
-          selectedRepoArr = record.attributes.selected_repos
+          var selectedRepoArr = record.attributes.selected_repos
         }
         else if((record.attributes.selected_repos.indexOf(',') === -1) &&
           (record.attributes.selected_repos != '')){

@@ -1,6 +1,13 @@
 angular.module('commitMap.services', [])
 .factory('userFactory', function($http, localStorageService){
   return{
+    // local storage methods
+    getFromLocalStorage: (key) => {
+      return localStorageService.get(key)
+    },
+    setToLocalStorage: (key, value) => {
+      return localStorageService.set(key, value)
+    },
     // user variables
     profileData : {},
     reposFromGithubData : {},
@@ -20,13 +27,13 @@ angular.module('commitMap.services', [])
         params: {access_token: passedToken}
       })
     },
-    // setAvailableUserRepos : (passedToken) => {
+    // setAvailableUserRepos : (repoId) => {
     //   return $http({
     //     url: '/getReposFromGitHub',
     //     method: "POST",
     //     data: {
-    //       access_token: passedToken,
-    //       selected_repo_id :
+    //       access_token: this.getFromLocalStorage('bearer_token'),
+    //       selected_repo_id : repoId
     //     }
     //   })
     // },
@@ -38,23 +45,18 @@ angular.module('commitMap.services', [])
         params: {access_token: passedToken}
       })
     },
-    setWatchedUserRepos : (passedToken, repoId) => {
+    setWatchedUserRepos : (repoId) => {
       return $http({
-        url: '/getReposFromGitHub',
+        url: '/userWatchedRepos',
         method: "POST",
         data: {
-          access_token: passedToken,
+          access_token: localStorageService.get('bearer_token'),
           selected_repo_id : repoId
         }
       })
     },
 
-    getFromLocalStorage: (key) => {
-      return localStorageService.get(key)
-    },
-    setToLocalStorage: (key, value) => {
-      return localStorageService.set(key, value)
-    },
+
 
     getUserWithToken : (token) => {
       $http.defaults.headers.get = {'authorization': ''}

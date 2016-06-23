@@ -14,10 +14,10 @@ legend.text-center
 							th Add To Watch
 							th Repository				
 					tbody
-						tr(ng-repeat='repo in reposFromGithubData')
+						tr(ng-repeat='repoid in availableUserRepoIds')
 							td 
-								input(type="button" class="btn btn-tomato" value="Add" ng-click="addRepoToWatch(repo.id)")
-							td {{repo.full_name}}
+								input(type="button" class="btn btn-tomato" value="Add" ng-click="addRepoToWatch(repoid)")
+							td {{repoid}}
 
 
 .col-md-6
@@ -25,7 +25,17 @@ legend.text-center
 		.panel-heading.text-center
 			span Repository Watch
 		.panel-body
-			h5 this is the content
+			table.table.table-striped.table-bordered(st-table='reposFromGithubData2')
+				thead
+					//- input.form-control(st-search='' placeholder='global search ...' type='text')
+					tr
+						th Remove From Watch
+						th Repository				
+				tbody
+					tr(ng-repeat='repoid in watchingUserRepoIds')
+						td 
+							input(type="button" class="btn btn-tomato" value="Remove" ng-click="addRepoToWatch(repoid)")
+						td {{repoid}}
 
 // Main component for a primary marketing message or call to action
 //- .jumbotron

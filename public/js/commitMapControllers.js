@@ -7,10 +7,6 @@ angular.module('commitMap.controllers', [])
   })
 
   .controller('loginController', function($scope, $http, $state, $auth, userFactory){
-
-    // userFactory.getUserWithToken()
-
-
     // login controller for github auth
     $scope.GitHubAuth = (provider) => {
       $auth.authenticate(provider)
@@ -22,14 +18,25 @@ angular.module('commitMap.controllers', [])
           .then((response2) => {
             console.log(response2);
             userFactory.setToLocalStorage('userProfile', response2.data)
-            // get repo data and store in factory
+            userFactory.setToLocalStorage('bearer_token', response2.data.bearer_token)
+            // get available repo data and store in factory
             userFactory.getAvailableUserRepos(response.data.token.access_token)
               .catch((e) => {console.log(e)})
               .then((res) => {
                 console.log(res)
-                userFactory.setToLocalStorage('availableUserRepoIds', res.data)
+                // assign scope var for available repo ids
+                $scope.availableUserRepoIds = res.data.split(',')
+                userFactory.setToLocalStorage('availableUserRepoIds', $scope.availableUserRepoIds)
                 // get Latest repos from github
               })
+              // get user watching repos
+              userFactory.getWatchedUserRepos(response.data.token.access_token)
+                .then((res) => {
+                  // console.log(res.data.selected_repos.split(','));
+                  var sanitizedRepoList
+                  res.data.selected_repos == undefined || null ? sanitizedRepoList = '' : sanitizedRepoList = res.data.selected_repos.split(',')
+                  userFactory.setToLocalStorage('watchingUserRepoIds', sanitizedRepoList)
+                })
               userFactory.getReposFromGitHub(response.data.token.access_token).then((res) => {
                 userFactory.setToLocalStorage('currentReposFromGithub', res.data)
               })
@@ -55,10 +62,36 @@ angular.module('commitMap.controllers', [])
   })
   .controller('repoSelectController', function($scope, $http, $state, userFactory){
     // github api call to get repos.
-    $scope.reposFromGithubData = userFactory.getFromLocalStorage('currentReposFromGithub')
+    $scope.availableUserRepoIds = userFactory.getFromLocalStorage('availableUserRepoIds')
+    $scope.watchingUserRepoIds = userFactory.getFromLocalStorage('watchingUserRepoIds')
+    console.log($scope.availableUserRepoIds);
+    // add repo to watch with api call
     $scope.addRepoToWatch = (repoId) => {
-      console.log(repoId);
+      userFactory.setWatchedUserRepos(repoId)
+      .then((res) => {
+        // console.log("RES HERE @@@@@@@@@@@@@@@@@@@@@@@@@");
+        // console.log(res);
+        // now update user watching repos.
 
+
+        userFactory.getWatchedUserRepos(userFactory.getFromLocalStorage('bearer_token'))
+        .then((res) => {
+          $scope.watchingUserRepoIds = res.data.selected_repos.split(',')
+        }).then(()=> {
+          // after update, reload availableUserRepoIds
+          userFactory.getAvailableUserRepos(userFactory.getFromLocalStorage('bearer_token'))
+          .then((res) => {
+            $scope.availableUserRepoIds = res.data.split(',')
+          })
+        })
+
+
+
+
+
+      })
+
+      console.log(repoId);
     }
 
 
