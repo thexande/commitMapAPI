@@ -38,6 +38,7 @@ angular.module('commitMap.services', [])
     //   })
     // },
 
+    // watched user repo methods
     getWatchedUserRepos : (passedToken) => {
       return $http({
         url: '/userWatchedRepos',
@@ -45,13 +46,23 @@ angular.module('commitMap.services', [])
         params: {access_token: passedToken}
       })
     },
-    setWatchedUserRepos : (repoId) => {
+    addToWatchedUserRepos : (repoId) => {
       return $http({
         url: '/userWatchedRepos',
         method: "POST",
         data: {
           access_token: localStorageService.get('bearer_token'),
           selected_repo_id : repoId
+        }
+      })
+    },
+    removeFromWatchedUserRepos : (repoId) => {
+      return $http({
+        url: '/removeFromWatchedUserRepos',
+        method: "POST",
+        data: {
+          access_token: localStorageService.get('bearer_token'),
+          selected_repo_id: repoId
         }
       })
     },

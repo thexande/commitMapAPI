@@ -67,34 +67,25 @@ angular.module('commitMap.controllers', [])
     console.log($scope.availableUserRepoIds);
     // add repo to watch with api call
     $scope.addRepoToWatch = (repoId) => {
-      userFactory.setWatchedUserRepos(repoId)
+      userFactory.addToWatchedUserRepos(repoId)
       .then((res) => {
-        // console.log("RES HERE @@@@@@@@@@@@@@@@@@@@@@@@@");
-        // console.log(res);
-        // now update user watching repos.
-
-
         userFactory.getWatchedUserRepos(userFactory.getFromLocalStorage('bearer_token'))
+
         .then((res) => {
           $scope.watchingUserRepoIds = res.data.selected_repos.split(',')
+          userFactory.setToLocalStorage('watchingUserRepoIds', $scope.watchingUserRepoIds)
         }).then(()=> {
           // after update, reload availableUserRepoIds
           userFactory.getAvailableUserRepos(userFactory.getFromLocalStorage('bearer_token'))
           .then((res) => {
             $scope.availableUserRepoIds = res.data.split(',')
+            userFactory.setToLocalStorage('availableUserRepoIds', $scope.availableUserRepoIds)
           })
         })
-
-
-
-
-
       })
-
-      console.log(repoId);
     }
+    // function to remove repo id from watch
+    $scope.removeRepoFromWatch = (repoId) => {
 
-
-    // set up data for ng-repeat in tables.
-
+    }
   })

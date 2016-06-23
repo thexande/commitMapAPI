@@ -104,7 +104,49 @@ router.get('/userWatchedRepos',
       }
     })
   })
-
+  // route to remove repos from user watch
+  router.post('/removeFromWatchedUserRepos',
+  (req, res, next) => {
+    // set auth headers to '' to avoid angular additons
+    req.headers.Authorization = ''
+    req.headers.authorization = ''
+    next()
+  },
+    passport.authenticate('bearer', {session: false}),
+    (req, res) => {
+      // retreive watched repos record for user from db
+      databaseConfig('user_seleted_repos').where({github_id: req.user.attributes.github_id})
+        .then((dbRes) => {
+          // db row returned. remove id from selected_repos and return to available repos.
+          var selectedReposStringWithPassedIdRemoved = dbRes[0].selected_repos.split(',').filter((i) => {
+            return i.toString() != req.body.selected_repo_id.toString()
+          }).join()
+          // update user_selected_repos table with new list of ids
+          databaseConfig('user_seleted_repos').where({github_id: req.user.attributes.github_id})
+            .update({selected_repos: selectedReposStringWithPassedIdRemoved})
+            .then((resp) => {
+              // next table. return id to user_available_repos
+              databaseConfig('user_available_repos').where({github_id: req.user.attributes.github_id})
+                .then((response) => {
+                  // user_available_repos record fetched. append selected_repo_id back into table.
+                  // what if available_repos is empty?
+                  if(response[0].available_repos == null || undefined){
+                    // available_repos is empty. append our id in.
+                    var availableReposWithPassedIdInserted = req.body.selected_repo_id
+                  } else {
+                    // available repos is not empty, 
+                  }
+                  var availableReposWithPassedIdInserted = response[0].available_repos
+                    .split(',')
+                    // .push(req.body.selected_repo_id.toString())
+                  console.log("######################"+availableReposWithPassedIdInserted);
+                  console.log("######################"+req.body.selected_repo_id);
+                  res.send('availableReposWithPassedIdInserted')
+                })
+            })
+        })
+      })
+  // route to add repos to user watch
   router.post('/userWatchedRepos',
   // middleware logging function
   (req, res, next) => {
