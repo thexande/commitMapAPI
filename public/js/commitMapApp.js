@@ -21,7 +21,10 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
   // GitHub auth
   $authProvider.github({
     url: '/auth/github',
-    clientId:'79c1a9391aa406e3f0a5',
+    // commitMapSatelizer Id
+    // clientId:'79c1a9391aa406e3f0a5',
+    // commitMapHerokuSatelizer Id
+    clientId: ac835acb2e86b1f6f916,
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',
     redirectUri: '/#/dash',
     optionalUrlParams: ['scope'],

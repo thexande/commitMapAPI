@@ -238,7 +238,10 @@ router.post('/auth/github',
     var params = {
       code: req.body.code,
       client_id: req.body.clientId,
-      client_secret: '9b4d0ef16b573cc1c714097ae5e26899085d5d9c',
+      // commitMapHerokuSatelizer
+      client_secret: 'c1a1a683761b250ba2679109f7c2aad51ef02d99',
+      // commitMapSatelizer
+      // client_secret: '9b4d0ef16b573cc1c714097ae5e26899085d5d9c',
       redirect_uri: req.body.redirectUri
     }
   request.get({ url: accessTokenUrl, qs: params },
