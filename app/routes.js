@@ -329,18 +329,19 @@ router.post('/auth/github',
                       databaseConfig('user_seleted_repos').where({github_id: userFromGithubObj.id})
                         .then((res) => {
                           // are there no repos selected?
+                          console.log(repoIds);
                           if(res[0].selected_repos == null ){
                             var repoIdsWithSelectedRemoved = repoIds
                           }
                           // is only one repo selected?
                           else if((res[0].selected_repos.indexOf(',') === -1) && (res[0].selected_repos != null)){
                             // only one repo selected
-                            var repoIdsWithSelectedRemoved = repoIds.filter((el) => {
+                            var repoIdsWithSelectedRemoved = repoIds.split(',').filter((el) => {
                               return res[0].selected_repos.indexOf(el) < 0
                             })
                           } else {
                             // many repos selected. split and loop.
-                            var repoIdsWithSelectedRemoved = repoIds.filter((el) => {
+                            var repoIdsWithSelectedRemoved = repoIds.split(',').filter((el) => {
                               return res[0].selected_repos.split(",").indexOf(el) < 0
                             })
                           }
