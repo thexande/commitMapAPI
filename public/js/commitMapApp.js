@@ -20,13 +20,19 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
   $urlRouterProvider.otherwise('login')
   // GitHub auth
   $authProvider.github({
-    url: 'http://www.commitmap.com/auth/github',
+    // heroku
+    // url: 'http://www.commitmap.com/auth/github',
+    // localhost
+    url: '/auth/github',
     // commitMapSatelizer Id
-    // clientId:'79c1a9391aa406e3f0a5',
+    clientId:'79c1a9391aa406e3f0a5',
     // commitMapHerokuSatelizer Id
-    clientId: 'ac835acb2e86b1f6f916',
+    // clientId: 'ac835acb2e86b1f6f916',
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',
-    redirectUri: 'http://www.commitmap.com/#/dash',
+    // heroku
+    // redirectUri: 'http://www.commitmap.com/#/dash',
+    // localhost
+    redirectUri: 'http://localhost:3000/#/dash',
     optionalUrlParams: ['scope'],
     scope: ['user:email', 'read:repo_hook', 'write:repo_hook'],
     scopeDelimiter: ' ',
