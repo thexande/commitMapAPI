@@ -20,10 +20,10 @@ commitMap.config(function($stateProvider, $urlRouterProvider, $authProvider) {
   $urlRouterProvider.otherwise('login')
   // GitHub auth
   $authProvider.github({
-    url: 'www.commitmap.com/auth/github',
+    url: '/auth/github',
     clientId:'79c1a9391aa406e3f0a5',
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',
-    redirectUri: 'http://localhost:3000/#/dash',
+    redirectUri: '/#/dash',
     optionalUrlParams: ['scope'],
     scope: ['user:email', 'read:repo_hook', 'write:repo_hook'],
     scopeDelimiter: ' ',
