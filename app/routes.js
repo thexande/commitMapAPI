@@ -350,7 +350,7 @@ router.post('/auth/github',
                           databaseConfig('user_available_repos').where({
                             github_id : userFromGithubObj.id
                           }).update({
-                            available_repos: repoIdsWithSelectedRemoved
+                            available_repos: repoIdsWithSelectedRemoved.toString()
                           }).then((res)=>{console.log(res);})
                         })
                     })
