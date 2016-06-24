@@ -7,6 +7,19 @@ module.exports = {
             tableName: "users"
         }
     },
+    linux: {
+      client: 'pg',
+      connection: {
+        host: 'localhost',
+        user: 'postgres',
+        password: 'postgres',
+        database: 'commitmap',
+      },
+      migrations: {
+        'directory': __dirname + "/migrations",
+        tableName: 'users'
+      }
+    },
     heroku: {
         client: 'pg',
         connection: {

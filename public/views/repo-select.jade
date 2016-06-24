@@ -14,12 +14,10 @@ legend.text-center
 							th Add To Watch
 							th Repository				
 					tbody
-						tr(ng-repeat='repoid in availableUserRepoIds')
+						tr(ng-repeat='repo in availableUserRepoIds')
 							td 
-								input(type="button" class="btn btn-tomato" value="Add" ng-click="addRepoToWatch(repoid)")
-							td {{repoid}}
-
-
+								input(type="button" class="btn btn-tomato" value="Add" ng-click="addRepoToWatch(repo)")
+							td {{repo.full_name}}
 .col-md-6
 	.panel.panel-tomato
 		.panel-heading.text-center

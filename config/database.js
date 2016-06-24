@@ -1,7 +1,7 @@
 var config = require('./knexfile.js');
 var knexLogger = require('knex-logger')
 
-var env = 'development';
+var env = 'linux';
 // var env = 'heroku';
 var knex = require('knex')(config[env]);
 knex.migrate.latest([config]);

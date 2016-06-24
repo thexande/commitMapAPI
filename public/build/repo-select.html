@@ -15,11 +15,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="repoid in availableUserRepoIds">
+            <tr ng-repeat="repo in availableUserRepoIds">
               <td> 
-                <input type="button" value="Add" ng-click="addRepoToWatch(repoid)" class="btn btn-tomato"/>
+                <input type="button" value="Add" ng-click="addRepoToWatch(repo)" class="btn btn-tomato"/>
               </td>
-              <td>{{repoid}}</td>
+              <td>{{repo.full_name}}</td>
             </tr>
           </tbody>
         </table>
