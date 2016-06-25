@@ -63,19 +63,22 @@ angular.module('commitMap.controllers', [])
     $scope.watchingUserRepoIds = userFactory.getFromLocalStorage('watchingUserRepoIds')
     console.log($scope.availableUserRepoIds);
     // add repo to watch with api call
-    $scope.addRepoToWatch = (repoId) => {
-      userFactory.addToWatchedUserRepos(repoId)
+    $scope.addRepoToWatch = (repo) => {
+      console.log(repo);
+      userFactory.addToWatchedUserRepos(repo)
       .then((res) => {
         userFactory.getWatchedUserRepos(userFactory.getFromLocalStorage('bearer_token'))
 
         .then((res) => {
-          $scope.watchingUserRepoIds = res.data.selected_repos.split(',')
+          console.log(JSON.parse(res.data.selected_repos));
+          $scope.watchingUserRepoIds = JSON.parse(res.data.selected_repos)
           userFactory.setToLocalStorage('watchingUserRepoIds', $scope.watchingUserRepoIds)
         }).then(()=> {
           // after update, reload availableUserRepoIds
           userFactory.getAvailableUserRepos(userFactory.getFromLocalStorage('bearer_token'))
           .then((res) => {
-            $scope.availableUserRepoIds = res.data.split(',')
+            console.log(res.data);
+            $scope.availableUserRepoIds = JSON.parse(res.data)
             userFactory.setToLocalStorage('availableUserRepoIds', $scope.availableUserRepoIds)
           })
         })

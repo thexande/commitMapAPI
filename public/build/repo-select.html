@@ -39,11 +39,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="repoid in watchingUserRepoIds">
+          <tr ng-repeat="repo in watchingUserRepoIds">
             <td> 
-              <input type="button" value="Remove" ng-click="addRepoToWatch(repoid)" class="btn btn-tomato"/>
+              <input type="button" value="Remove" ng-click="addRepoToWatch(repo)" class="btn btn-tomato"/>
             </td>
-            <td>{{repoid}}</td>
+            <td>{{repo.full_name}}</td>
           </tr>
         </tbody>
       </table>

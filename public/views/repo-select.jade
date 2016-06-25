@@ -30,10 +30,10 @@ legend.text-center
 						th Remove From Watch
 						th Repository				
 				tbody
-					tr(ng-repeat='repoid in watchingUserRepoIds')
+					tr(ng-repeat='repo in watchingUserRepoIds')
 						td 
-							input(type="button" class="btn btn-tomato" value="Remove" ng-click="addRepoToWatch(repoid)")
-						td {{repoid}}
+							input(type="button" class="btn btn-tomato" value="Remove" ng-click="addRepoToWatch(repo)")
+						td {{repo.full_name}}
 
 // Main component for a primary marketing message or call to action
 //- .jumbotron

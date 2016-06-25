@@ -164,38 +164,46 @@ router.get('/userWatchedRepos',
       // TODO replace
       watchedRepoTable.findOne({id: req.user.attributes.id})
       .then((record) => {
-        // record retreived from DB. now append our new id and update
-        // is the record null?
-        console.log(record);
         // repo being passed from client
-        var repoToAddToSelected = req.body.selected_repo_id
+        var repoToAddToSelected = req.body.selected_repo
         // selected repo array from table
+        console.log(record.attributes.selected_repo);
         var selectedRepos = record.attributes.selected_repos
+        console.log("##########selectedRepos###############################################");
+        console.log(selectedRepos);
 
-        if(record.attributes.selected_repos == null){
+        if(selectedRepos != null ){
+          // parse json string
+          selectedRepos = JSON.parse(selectedRepos)
+          var repoDupe = selectedRepos.filter((i) => {
+            return i.id === repoToAddToSelected.id
+          })
+          console.log("####################repoDupe#######################");
+          console.log(repoDupe);
+
+        }
+        // conditional structure
+        if(selectedRepos == null || undefined){
           console.log("No ID");
-          var selectedRepoArr = repoToAddToSelected
+          selectedRepos = []
+          selectedRepos.push(repoToAddToSelected)
         }
         // handle duplicate repo. is this repo object already inside
-        // else if(){
-        //   console.log("DUPE");
-        //   //  repo ID already being watched
-        //   var selectedRepoArr = record.attributes.selected_repos
-        // }
-        else if((record.attributes.selected_repos.indexOf(',') === -1) &&
-          (record.attributes.selected_repos != '')){
-          // no commas, so there is only one id being watched currently
-          console.log("Single ID");
-          var selectedRepoArr = record.attributes.selected_repos + ',' + req.body.selected_repo_id
-        } else {
-          // selected_repos is not null or one ID, split and append new id to watch
-          console.log("multi ID");
-          var selectedRepoArr = record.attributes.selected_repos.split(',')
-          selectedRepoArr.push(req.body.selected_repo_id)
+        // does our repo exist in user_selected_repos?
+        else if(repoDupe.length > 0){
+          console.log("DUPE");
+          //  repo ID already being watched
+          var selectedRepos = selectedRepos
+        }
+        else{
+          // append selectedRepo Ojbect into selectedRepos array
+          console.log(selectedRepos);
+          selectedRepos.push(repoToAddToSelected)
+
         }
         // new repo id added to selected repo arr. update selected_repo table with new arr
         watchedRepoTable.update({
-          selected_repos: selectedRepoArr.toString()
+          selected_repos: JSON.stringify(selectedRepos)
         }, {
           id: req.user.attributes.id
         })
@@ -206,19 +214,17 @@ router.get('/userWatchedRepos',
           availableRepoTable.findOne({ id: req.user.attributes.id })
             .then((result) => {
               console.log("ALTERING availableRepoTable");
-
+              // remove all selected repos from available and update
+              var newAvailableRepos = result.attributes.available_repos.filter((i) => {
+                return i.id != repoToAddToSelected.id
+              })
               availableRepoTable.update({
-                available_repos: result.attributes.available_repos.split(',').filter((i) => {
-                  if(i.toString() != req.body.selected_repo_id.toString()){
-                    return i
-                  }
-                }).join(',')
+                available_repos: JSON.stringify(newAvailableRepos)
               }, {
                 id: req.user.attributes.id
               })
             })
-
-          // return to app
+          // return to app collection of available_repos
           res.send(collection);
         })
       })
