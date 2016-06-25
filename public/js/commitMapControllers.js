@@ -32,7 +32,9 @@ angular.module('commitMap.controllers', [])
               // get user watching repos
               userFactory.getWatchedUserRepos(response.data.token.access_token)
                 .then((res) => {
-                  // userFactory.setToLocalStorage('watchingUserRepoIds', JSON.parse(res.data.selected_repos)
+                  console.log("########## watching res here #########3");
+                  console.log(res);
+                  userFactory.setToLocalStorage('watchingUserRepos', JSON.parse(res.data.selected_repos))
                 })
               // userFactory.getReposFromGitHub(response.data.token.access_token).then((res) => {
               //   userFactory.setToLocalStorage('currentReposFromGithub', res.data)
@@ -60,7 +62,7 @@ angular.module('commitMap.controllers', [])
   .controller('repoSelectController', function($scope, $http, $state, userFactory){
     // github api call to get repos.
     $scope.availableUserRepoIds = userFactory.getFromLocalStorage('availableUserRepoIds')
-    $scope.watchingUserRepoIds = userFactory.getFromLocalStorage('watchingUserRepoIds')
+    $scope.watchingUserRepoIds = userFactory.getFromLocalStorage('watchingUserRepos')
     console.log($scope.availableUserRepoIds);
     // add repo to watch with api call
     $scope.addRepoToWatch = (repo) => {

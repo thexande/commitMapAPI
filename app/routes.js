@@ -117,31 +117,62 @@ router.get('/userWatchedRepos',
       // retreive watched repos record for user from db
       databaseConfig('user_seleted_repos').where({github_id: req.user.attributes.github_id})
         .then((dbRes) => {
+          var repoToRemove = JSON.parse(req.body.selected_repo)
+          var userSelectedRepos = JSON.parse(dbRes[0].selected_repos)
           // db row returned. remove id from selected_repos and return to available repos.
-          var selectedReposStringWithPassedIdRemoved = dbRes[0].selected_repos.split(',').filter((i) => {
-            return i.toString() != req.body.selected_repo_id.toString()
-          }).join()
+          // is selected_repos null?
+          if(userSelectedRepos != null || undefined){
+            userSelectedRepos = userSelectedRepos.filter((i) => {
+              return i.id != repoToRemove.id
+            })
+          }
           // update user_selected_repos table with new list of ids
           databaseConfig('user_seleted_repos').where({github_id: req.user.attributes.github_id})
-            .update({selected_repos: selectedReposStringWithPassedIdRemoved})
+            .update({selected_repos: JSON.stringify(userSelectedRepos)})
             .then((resp) => {
-              // next table. return id to user_available_repos
+              // next table. return repo to user_available_repos
               databaseConfig('user_available_repos').where({github_id: req.user.attributes.github_id})
                 .then((response) => {
+                  var updatedAvailableRepos = response[0].available_repos
+                  console.log("#############updatedAvailableRepos##############");
+                  console.log(updatedAvailableRepos.length);
                   // user_available_repos record fetched. append selected_repo_id back into table.
                   // what if available_repos is empty?
-                  if(response[0].available_repos == null || undefined){
-                    // available_repos is empty. append our id in.
-                    var availableReposWithPassedIdInserted = req.body.selected_repo_id
+
+                  if(updatedAvailableRepos == null || undefined){
+                    // available_repos is empty. append our repo removed from selected repos in.
+                    console.log("#############available_repos is empty#####################");
+                    var availableReposWithNewRepo = repoToRemove
                   } else {
-                    // available repos is not empty,
+                    // available_repos is not empty. push our repoToRemove object into array
+                    var availableReposWithNewRepo = updatedAvailableRepos
+                    availableReposWithNewRepo.push(repoToRemove)
                   }
-                  var availableReposWithPassedIdInserted = response[0].available_repos
-                    .split(',')
-                    // .push(req.body.selected_repo_id.toString())
-                  console.log("######################"+availableReposWithPassedIdInserted);
-                  console.log("######################"+req.body.selected_repo_id);
-                  res.send('availableReposWithPassedIdInserted')
+
+                  // return our user_available_repos to the database
+                  databaseConfig('user_available_repos').where({github_id: req.user.attributes.github_id})
+                    .update({available_repos: JSON.stringify(availableReposWithNewRepo)})
+                    .catch((e) => {console.log(e)})
+                    .then((user_available_repos_resp) => {
+                      // now return both available_repos and selected_repos
+                      databaseConfig('user_available_repos').where({github_id: req.user.attributes.github_id})
+                        .then((resp) => {
+                          latestUserAvailableRepos = resp[0].available_repos
+                          // get selected repos
+                          databaseConfig('user_seleted_repos').where({github_id: req.user.attributes.github_id})
+                            .then((resp) => {
+                              latestUserSelectedRepos = resp[0].selected_repos
+
+                              // generate return object and send
+                              var returnObj = {
+                                latestUserSelectedRepos : latestUserSelectedRepos,
+                                latestUserAvailableRepos: latestUserAvailableRepos
+                              }
+                              // send back object
+                              res.send(returnObj)
+                            })
+                        })
+                    })
                 })
             })
         })

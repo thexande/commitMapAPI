@@ -56,13 +56,13 @@ angular.module('commitMap.services', [])
         }
       })
     },
-    removeFromWatchedUserRepos : (repoId) => {
+    removeFromWatchedUserRepos : (repo) => {
       return $http({
         url: '/removeFromWatchedUserRepos',
         method: "POST",
         data: {
           access_token: localStorageService.get('bearer_token'),
-          selected_repo_id: repoId
+          selected_repo: repo
         }
       })
     },

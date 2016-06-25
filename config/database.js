@@ -1,5 +1,5 @@
 var config = require('./knexfile.js');
-var knexLogger = require('knex-logger')
+// var knexLogger = require('knex-logger')
 
 var env = 'linux';
 // var env = 'heroku';
