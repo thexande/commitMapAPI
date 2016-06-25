@@ -78,7 +78,7 @@ angular.module('commitMap.controllers', [])
           userFactory.getAvailableUserRepos(userFactory.getFromLocalStorage('bearer_token'))
           .then((res) => {
             console.log(res.data);
-            $scope.availableUserRepoIds = JSON.parse(res.data)
+            $scope.availableUserRepoIds = res.data
             userFactory.setToLocalStorage('availableUserRepoIds', $scope.availableUserRepoIds)
           })
         })
